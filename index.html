@@ -130,16 +130,18 @@ try{
   const savedAmounts=JSON.parse(localStorage.getItem('dashboardPlusDailyAmounts')||'null');
   if(Array.isArray(savedAmounts)&&savedAmounts.length===30&&savedAmounts.every(n=>Number.isFinite(n))) amounts.splice(0,amounts.length,...savedAmounts);
 }catch(error){}
-let selectedDay=16;
+const todayDate=new Date().getDate();
+const todayIndex=Math.min(Math.max(todayDate,1),amounts.length)-1;
+let selectedDay=todayIndex;
 const weekdays=['Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
 
 amounts.forEach((amount,index)=>{
   const date=index+1;
   const btn=document.createElement('button');
   btn.type='button';
-  btn.className='day'+(date>17?' dim':'');
+  btn.className='day'+(date>todayDate?' dim':'');
   btn.innerHTML='<span class="weekday">'+weekdays[index%7]+'</span><span class="date">'+date+'</span>';
-  btn.setAttribute('aria-pressed',String(index===16));
+  btn.setAttribute('aria-pressed',String(index===todayIndex));
   btn.addEventListener('click',()=>choose(index));
   days.appendChild(btn);
 });
@@ -195,7 +197,7 @@ function curvePath(points,from,to){
 function choose(i){
   selectedDay=i;
   [...days.children].forEach((el,n)=>{
-    el.classList.toggle('dim',n>16);
+    el.classList.toggle('dim',n>todayIndex);
     el.classList.toggle('selected',n===i);
     el.setAttribute('aria-pressed',String(n===i));
   });
@@ -218,7 +220,7 @@ function choose(i){
 }
 
 document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
-choose(16);
+choose(todayIndex);
 </script>
 </body>
 </html>
