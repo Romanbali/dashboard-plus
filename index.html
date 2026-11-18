@@ -60,33 +60,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 <script>
 const days=document.getElementById('days');
 const value=document.getElementById('value');
-const dates=Array.from({length:30},(_,i)=>i+1);
 const amounts=[15,15,15,15,-105,30,30,30,30,-93,30,-109,30,30,30,30,-95,15,15,15,15,15,15,15,15,15,15,15,15,15];
 const weekdays=['Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
 
-dates.forEach(date=>{
+amounts.forEach((amount,index)=>{
+  const date=index+1;
   const btn=document.createElement('button');
   btn.type='button';
   btn.className='day'+(date>17?' dim':'');
-  btn.innerHTML='<span class="weekday">'+weekdays[(date-1)%7]+'</span><span class="date">'+date+'</span>';
-  btn.addEventListener('click',()=>choose(date-1));
+  btn.innerHTML='<span class="weekday">'+weekdays[index%7]+'</span><span class="date">'+date+'</span>';
+  btn.setAttribute('aria-pressed',String(index===16));
+  btn.addEventListener('click',()=>choose(index));
   days.appendChild(btn);
 });
 
-days.children[16].classList.add('selected');
-days.children[16].setAttribute('aria-pressed','true');
-document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
-
 function chartPoints(){
-  // The chart tracks the running deposit: initial balance, then each day's change.
   const balances=[200];
   amounts.forEach(change=>balances.push(balances[balances.length-1]+change));
   const min=Math.min(...balances);
   const max=Math.max(...balances);
   const range=max-min||1;
   return balances.map((balance,index)=>({
-    x:20+(920*index/(balances.length-1)),
-    y:30+120*((max-balance)/range),
+    x:20+920*index/(balances.length-1),
+    y:30+120*(max-balance)/range,
     balance
   }));
 }
@@ -94,32 +90,24 @@ function chartPoints(){
 function curvePath(points,from,to){
   if(from>to) return '';
   if(from===to) return 'M '+points[from].x+' '+points[from].y;
-
   const slopes=[];
   for(let i=0;i<points.length-1;i++){
     slopes.push((points[i+1].y-points[i].y)/(points[i+1].x-points[i].x));
   }
-
   const tangents=points.map((point,i)=>{
     if(i===0) return slopes[0];
     if(i===points.length-1) return slopes[slopes.length-1];
     const before=slopes[i-1], after=slopes[i];
-    if(before===0 || after===0 || before*after<0) return 0;
+    if(before===0||after===0||before*after<0) return 0;
     const h0=points[i].x-points[i-1].x;
     const h1=points[i+1].x-points[i].x;
     const w1=2*h1+h0, w2=h1+2*h0;
     return (w1+w2)/(w1/before+w2/after);
   });
-
   let d='M '+points[from].x+' '+points[from].y;
   for(let i=from;i<to;i++){
-    const p1=points[i], p2=points[i+1];
-    const dx=p2.x-p1.x;
-    const c1x=p1.x+dx/3;
-    const c2x=p2.x-dx/3;
-    const c1y=p1.y+tangents[i]*dx/3;
-    const c2y=p2.y-tangents[i+1]*dx/3;
-    d+=' C '+c1x+' '+c1y+' '+c2x+' '+c2y+' '+p2.x+' '+p2.y;
+    const p1=points[i],p2=points[i+1],dx=p2.x-p1.x;
+    d+=' C '+(p1.x+dx/3)+' '+(p1.y+tangents[i]*dx/3)+' '+(p2.x-dx/3)+' '+(p2.y-tangents[i+1]*dx/3)+' '+p2.x+' '+p2.y;
   }
   return d;
 }
@@ -127,94 +115,28 @@ function curvePath(points,from,to){
 function choose(i){
   [...days.children].forEach((el,n)=>{
     el.classList.toggle('dim',n>16);
+    el.classList.toggle('selected',n===i);
     el.setAttribute('aria-pressed',String(n===i));
   });
-
   const points=chartPoints();
   const balanceIndex=i+1;
   const point=points[balanceIndex];
   value.textContent=String.fromCharCode(36)+point.balance;
-  const halo=document.querySelector('.marker-halo');
-  marker.setAttribute('cx',point.x);
-  marker.setAttribute('cy',point.y);
-  halo.setAttribute('cx',point.x);
-  halo.setAttribute('cy',point.y);
-
-  const pillX=Math.max(0,Math.min(790,point.x-75));
-  value.style.left=(pillX/960*94.6+2.7)+'%';
-}
-
-[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
-choose(16);
-</script>
-</body>
-</html>
-+point.balance;
-
-  const active=document.getElementById('activeLine');
-  const futurePath=document.querySelector('svg path.future');
   const activeCurve=curvePath(points,0,balanceIndex);
-  active.setAttribute('d',activeCurve);
+  document.getElementById('activeLine').setAttribute('d',activeCurve);
   document.querySelector('svg path.glow').setAttribute('d',activeCurve);
-  futurePath.setAttribute('d',curvePath(points,balanceIndex,points.length-1));
-
-
+  document.querySelector('svg path.future').setAttribute('d',curvePath(points,balanceIndex,points.length-1));
   const marker=document.querySelector('.marker');
   const halo=document.querySelector('.marker-halo');
   marker.setAttribute('cx',point.x);
   marker.setAttribute('cy',point.y);
   halo.setAttribute('cx',point.x);
   halo.setAttribute('cy',point.y);
-
   const pillX=Math.max(0,Math.min(790,point.x-75));
   value.style.left=(pillX/960*94.6+2.7)+'%';
 }
 
-[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
-choose(16);
-</script>
-</body>
-</html>
-+point.balance;
-
-  const marker=document.querySelector('.marker');
-  const halo=document.querySelector('.marker-halo');
-  marker.setAttribute('cx',point.x);
-  marker.setAttribute('cy',point.y);
-  halo.setAttribute('cx',point.x);
-  halo.setAttribute('cy',point.y);
-
-  const pillX=Math.max(0,Math.min(790,point.x-75));
-  value.style.left=(pillX/960*94.6+2.7)+'%';
-}
-
-[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
-choose(16);
-</script>
-</body>
-</html>
-+point.balance;
-
-  const active=document.getElementById('activeLine');
-  const futurePath=document.querySelector('svg path.future');
-  const activeCurve=curvePath(points,0,balanceIndex);
-  active.setAttribute('d',activeCurve);
-  document.querySelector('svg path.glow').setAttribute('d',activeCurve);
-  futurePath.setAttribute('d',curvePath(points,balanceIndex,points.length-1));
-
-
-  const marker=document.querySelector('.marker');
-  const halo=document.querySelector('.marker-halo');
-  marker.setAttribute('cx',point.x);
-  marker.setAttribute('cy',point.y);
-  halo.setAttribute('cx',point.x);
-  halo.setAttribute('cy',point.y);
-
-  const pillX=Math.max(0,Math.min(790,point.x-75));
-  value.style.left=(pillX/960*94.6+2.7)+'%';
-}
-
-[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
+document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
 choose(16);
 </script>
 </body>
