@@ -23,8 +23,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .pill{position:absolute;left:51.85%;top:9.22%;width:15.15%;height:3.15%;min-height:22px;border-radius:7px;background:rgba(184,210,247,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:clamp(13px,3.15vw,32px);font-weight:400;color:#fff;letter-spacing:.01em;z-index:2}
 .days-window{position:absolute;left:7.32%;top:28.08%;width:89.36%;height:8.25%;overflow-x:auto;overflow-y:visible;scrollbar-width:none;touch-action:pan-x;overscroll-behavior-x:contain}
 .days-window::-webkit-scrollbar{display:none}
-.days{height:100%;display:flex;gap:1.27%;width:max-content;min-width:100%;padding:0 0 3px}
-.day{flex:0 0 11.28%;width:11.28%;height:96%;border:1px solid rgba(206,224,255,.09);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.135),rgba(255,255,255,.065));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 7px 19px rgba(0,20,75,.13);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:13px;gap:11px;color:#f5f7ff;cursor:pointer;user-select:none;position:relative;white-space:nowrap}
+.days{height:100%;display:flex;gap:calc(min(100vw,1024px)*.0127);width:max-content;min-width:100%;padding:0 0 3px}
+.day{flex:0 0 calc(min(100vw,1024px)*.1006);width:calc(min(100vw,1024px)*.1006);height:100%;border:1px solid rgba(206,224,255,.09);border-radius:calc(min(100vw,1024px)*.0234);background:linear-gradient(145deg,rgba(255,255,255,.135),rgba(255,255,255,.065));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 7px 19px rgba(0,20,75,.13);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:13px;gap:11px;color:#f5f7ff;cursor:pointer;user-select:none;position:relative;white-space:nowrap}
 .day .weekday{font-size:clamp(11px,2.35vw,24px);font-weight:400;line-height:1.1;color:#edf3ff}
 .day .date{font-size:clamp(17px,4.05vw,41px);line-height:1.05;font-weight:600;letter-spacing:-.025em}
 .day.selected{border:2px solid #ff5fbd;box-shadow:0 0 5px 1px #ff55b9,0 0 15px 2px rgba(255,69,181,.82),inset 0 0 8px rgba(255,89,192,.16);padding-top:12px}
@@ -52,23 +52,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
   </div>
   <div class="pill" id="value">$123</div>
   <div class="days-window" id="daysWindow" aria-label="Scroll dates horizontally">
-    <div class="days" id="days">
-      <button class="day" type="button"><span class="weekday">Wed</span><span class="date">11</span></button>
-      <button class="day" type="button"><span class="weekday">Thu</span><span class="date">12</span></button>
-      <button class="day" type="button"><span class="weekday">Fri</span><span class="date">13</span></button>
-      <button class="day" type="button"><span class="weekday">Sat</span><span class="date">14</span></button>
-      <button class="day" type="button"><span class="weekday">Sun</span><span class="date">15</span></button>
-      <button class="day" type="button"><span class="weekday">Mon</span><span class="date">16</span></button>
-      <button class="day selected" type="button" aria-pressed="true"><span class="weekday">Tue</span><span class="date">17</span></button>
-      <button class="day dim" type="button"><span class="weekday">Wed</span><span class="date">18</span></button>
-    </div>
+    <div class="days" id="days"></div>
   </div>
 </main>
 <script>
 const days=document.getElementById('days');
 const value=document.getElementById('value');
-const dates=[11,12,13,14,15,16,17,18];
-const amounts=[84,91,76,102,109,116,123,128];
+const dates=Array.from({length:31},(_,i)=>i+1);
+const amounts=dates.map(d=>Math.round(70+35*Math.sin(d*.48)+d*2.2));
+amounts[10]=84;amounts[11]=91;amounts[12]=76;amounts[13]=102;amounts[14]=109;amounts[15]=116;amounts[16]=123;amounts[17]=128;
+const weekdays=['Wed','Thu','Fri','Sat','Sun','Mon','Tue'];
+dates.forEach(date=>{
+  const btn=document.createElement('button');
+  btn.type='button';btn.className='day'+(date===18?' dim':'');
+  btn.innerHTML='<span class="weekday">'+weekdays[(date-11+70)%7]+'</span><span class="date">'+date+'</span>';
+  btn.addEventListener('click',()=>choose(date-1));
+  days.appendChild(btn);
+});
+days.children[16].classList.add('selected');
+days.children[16].setAttribute('aria-pressed','true');
+document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
 const curves=[
 'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
 'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
@@ -82,7 +85,7 @@ const curves=[
 function choose(i){
   [...days.children].forEach((el,n)=>{el.classList.toggle('selected',n===i);el.classList.toggle('dim',n===7&&i!==7);el.setAttribute('aria-pressed',String(n===i));});
   value.textContent='$'+amounts[i];
-  const x=[420,446,470,495,520,550,580,620][i], y=[116,105,98,91,75,52,30,34][i];
+  const x=Math.max(0,Math.min(940,580+(i-16)*27)), y=Math.max(18,Math.min(160,30-(i-16)*3.4));
   const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo'),guide=document.querySelector('.marker-line');
   marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
   guide.setAttribute('x1',x);guide.setAttribute('x2',x);guide.setAttribute('y1',y+10);
