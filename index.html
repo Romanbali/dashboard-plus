@@ -133,7 +133,7 @@ function choose(i){
   const points=chartPoints();
   const balanceIndex=i+1;
   const point=points[balanceIndex];
-  value.textContent='
+  value.textContent=String.fromCharCode(36)+point.balance;
   const halo=document.querySelector('.marker-halo');
   marker.setAttribute('cx',point.x);
   marker.setAttribute('cy',point.y);
