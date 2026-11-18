@@ -115,7 +115,9 @@ function choose(i){
   const points=chartPoints();
   const active=document.getElementById('activeLine');
   const futurePath=document.querySelector('svg path.future');
-  active.setAttribute('d',curvePath(points,0,i));
+  const activeCurve=curvePath(points,0,i);
+  active.setAttribute('d',activeCurve);
+  document.querySelector('svg path.glow').setAttribute('d',activeCurve);
   futurePath.setAttribute('d',curvePath(points,i,points.length-1));
 
   const point=points[i];
