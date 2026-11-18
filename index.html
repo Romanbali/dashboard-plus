@@ -63,43 +63,50 @@ const value=document.getElementById('value');
 const dates=Array.from({length:30},(_,i)=>i+1);
 const amounts=[15,15,15,15,-105,30,30,30,30,-93,30,-109,30,30,30,30,-95,15,15,15,15,15,15,15,15,15,15,15,15,15];
 const weekdays=['Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
+
 dates.forEach(date=>{
   const btn=document.createElement('button');
-  btn.type='button';btn.className='day'+(date===18?' dim':'');
+  btn.type='button';
+  btn.className='day'+(date>17?' dim':'');
   btn.innerHTML='<span class="weekday">'+weekdays[(date-1)%7]+'</span><span class="date">'+date+'</span>';
   btn.addEventListener('click',()=>choose(date-1));
   days.appendChild(btn);
 });
+
 days.children[16].classList.add('selected');
 days.children[16].setAttribute('aria-pressed','true');
-choose(16);
 document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
-const curves=[
-'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
-'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
-'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
-'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
-'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
-'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
-'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
-'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22'
-];
+
 function choose(i){
-  [...days.children].forEach((el,n)=>{el.classList.toggle('future',n>16);el.classList.toggle('dim',n>16);el.setAttribute('aria-pressed',String(n===i));});
-  value.textContent=amounts[i]<0?'-
+  [...days.children].forEach((el,n)=>{
+    el.classList.toggle('dim',n>16);
+    el.setAttribute('aria-pressed',String(n===i));
+  });
+
+  const amount=amounts[i];
+  value.textContent=amount<0?'-$'+Math.abs(amount):'$'+amount;
+
   const active=document.getElementById('activeLine');
-  const future=document.querySelector('.future');
-  const activeLength=active.getTotalLength(), futureLength=future.getTotalLength();
+  const futurePath=document.querySelector('svg path.future');
+  const activeLength=active.getTotalLength();
+  const futureLength=futurePath.getTotalLength();
   const point=i<=16
     ? active.getPointAtLength(activeLength*(i/16))
-    : future.getPointAtLength(futureLength*((i-16)/14));
-  const x=point.x, y=point.y;
-  const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo');
-  marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
-  const pillX=Math.max(0,Math.min(790,x-75));value.style.left=(pillX/960*94.6+2.7)+'%';
-  document.getElementById('activeLine').style.opacity='1';
+    : futurePath.getPointAtLength(futureLength*((i-16)/13));
+
+  const marker=document.querySelector('.marker');
+  const halo=document.querySelector('.marker-halo');
+  marker.setAttribute('cx',point.x);
+  marker.setAttribute('cy',point.y);
+  halo.setAttribute('cx',point.x);
+  halo.setAttribute('cy',point.y);
+
+  const pillX=Math.max(0,Math.min(790,point.x-75));
+  value.style.left=(pillX/960*94.6+2.7)+'%';
 }
+
 [...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
+choose(16);
 </script>
 </body>
 </html>+Math.abs(amounts[i]):'
