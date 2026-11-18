@@ -80,9 +80,12 @@ function chartPoints(){
   const min=Math.min(...balances);
   const max=Math.max(...balances);
   const range=max-min||1;
+  // A little extra headroom keeps large daily changes elegant rather than needle-sharp.
+  const visualRange=range*1.22;
+  const center=(max+min)/2;
   return balances.map((balance,index)=>({
     x:20+920*index/(balances.length-1),
-    y:30+120*(max-balance)/range,
+    y:90-92*(balance-center)/visualRange,
     balance
   }));
 }
@@ -90,24 +93,20 @@ function chartPoints(){
 function curvePath(points,from,to){
   if(from>to) return '';
   if(from===to) return 'M '+points[from].x+' '+points[from].y;
-  const slopes=[];
-  for(let i=0;i<points.length-1;i++){
-    slopes.push((points[i+1].y-points[i].y)/(points[i+1].x-points[i].x));
-  }
-  const tangents=points.map((point,i)=>{
-    if(i===0) return slopes[0];
-    if(i===points.length-1) return slopes[slopes.length-1];
-    const before=slopes[i-1], after=slopes[i];
-    if(before===0||after===0||before*after<0) return 0;
-    const h0=points[i].x-points[i-1].x;
-    const h1=points[i+1].x-points[i].x;
-    const w1=2*h1+h0, w2=h1+2*h0;
-    return (w1+w2)/(w1/before+w2/after);
-  });
   let d='M '+points[from].x+' '+points[from].y;
+  // Centripetal-style cubic handles create a continuous, flowing line through every daily balance.
   for(let i=from;i<to;i++){
-    const p1=points[i],p2=points[i+1],dx=p2.x-p1.x;
-    d+=' C '+(p1.x+dx/3)+' '+(p1.y+tangents[i]*dx/3)+' '+(p2.x-dx/3)+' '+(p2.y-tangents[i+1]*dx/3)+' '+p2.x+' '+p2.y;
+    const p0=points[Math.max(from,i-1)];
+    const p1=points[i];
+    const p2=points[i+1];
+    const p3=points[Math.min(to,i+2)];
+    const dx=p2.x-p1.x;
+    const tension=0.34;
+    const c1x=p1.x+dx/3;
+    const c2x=p2.x-dx/3;
+    const c1y=p1.y+(p2.y-p0.y)*tension;
+    const c2y=p2.y-(p3.y-p1.y)*tension;
+    d+=' C '+c1x+' '+c1y+' '+c2x+' '+c2y+' '+p2.x+' '+p2.y;
   }
   return d;
 }
