@@ -109,36 +109,4 @@ function choose(i){
 choose(16);
 </script>
 </body>
-</html>+Math.abs(amounts[i]):'
-  const active=document.getElementById('activeLine');
-  const future=document.querySelector('.future');
-  const activeLength=active.getTotalLength(), futureLength=future.getTotalLength();
-  const point=i<=16
-    ? active.getPointAtLength(activeLength*(i/16))
-    : future.getPointAtLength(futureLength*((i-16)/14));
-  const x=point.x, y=point.y;
-  const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo');
-  marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
-  const pillX=Math.max(0,Math.min(790,x-75));value.style.left=(pillX/960*94.6+2.7)+'%';
-  document.getElementById('activeLine').style.opacity='1';
-}
-[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
-</script>
-</body>
-</html>+amounts[i];
-  const active=document.getElementById('activeLine');
-  const future=document.querySelector('.future');
-  const activeLength=active.getTotalLength(), futureLength=future.getTotalLength();
-  const point=i<=16
-    ? active.getPointAtLength(activeLength*(i/16))
-    : future.getPointAtLength(futureLength*((i-16)/14));
-  const x=point.x, y=point.y;
-  const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo');
-  marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
-  const pillX=Math.max(0,Math.min(790,x-75));value.style.left=(pillX/960*94.6+2.7)+'%';
-  document.getElementById('activeLine').style.opacity='1';
-}
-[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
-</script>
-</body>
 </html>
