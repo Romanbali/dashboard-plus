@@ -110,8 +110,14 @@ document.getElementById('saveDeposit').addEventListener('click',()=>{
   if(!Number.isFinite(targetBalance)){depositInput.focus();return;}
   const points=chartPoints();
   const previousBalance=points[selectedDay].balance;
-  amounts[selectedDay]=Math.round((targetBalance-previousBalance)*100)/100;
-  try{localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));}catch(error){}
+  const exactBalance=Math.round(targetBalance*100)/100;
+  amounts[selectedDay]=Math.round((exactBalance-previousBalance)*100)/100;
+  balanceOverrides[selectedDay]=exactBalance;
+  for(let i=selectedDay+1;i<balanceOverrides.length;i++) balanceOverrides[i]=null;
+  try{
+    localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));
+    localStorage.setItem('dashboardPlusBalanceOverrides',JSON.stringify(balanceOverrides));
+  }catch(error){}
   closeDepositEditor();
   choose(selectedDay);
 });
@@ -138,13 +144,24 @@ amounts.forEach((amount,index)=>{
   days.appendChild(btn);
 });
 
+let balanceOverrides=Array(30).fill(null);
+try{
+  const savedOverrides=JSON.parse(localStorage.getItem('dashboardPlusBalanceOverrides')||'null');
+  if(Array.isArray(savedOverrides)&&savedOverrides.length===30) balanceOverrides=savedOverrides.map(v=>v===null?null:(Number.isFinite(Number(v))?Number(v):null));
+}catch(error){}
+
 function chartPoints(){
   const balances=[startingDeposit];
-  amounts.forEach(change=>balances.push(balances[balances.length-1]+change));
+  amounts.forEach((change,index)=>{
+    const override=balanceOverrides[index];
+    const nextBalance=override===null
+      ? balances[index]+change
+      : Math.round(Number(override)*100)/100;
+    balances.push(Math.round(nextBalance*100)/100);
+  });
   const min=Math.min(...balances);
   const max=Math.max(...balances);
   const range=max-min||1;
-  // A little extra headroom keeps large daily changes elegant rather than needle-sharp.
   const visualRange=range*1.22;
   const center=(max+min)/2;
   return balances.map((balance,index)=>({
