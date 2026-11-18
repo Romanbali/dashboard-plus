@@ -72,9 +72,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 </main>
 <div class="deposit-backdrop" id="depositBackdrop" aria-hidden="true">
   <section class="deposit-dialog" role="dialog" aria-modal="true" aria-labelledby="depositTitle">
-    <h2 id="depositTitle">Edit today's amount</h2>
-    <p id="depositDescription">Change the result for the selected day. The balance and the rest of the chart will recalculate.</p>
-    <label for="depositInput">Daily result ($)</label>
+    <h2 id="depositTitle">Edit balance</h2>
+    <p id="depositDescription">Set the deposit balance for the selected day. This day's result and all following balances will recalculate automatically.</p>
+    <label for="depositInput">Balance on selected day ($)</label>
     <input id="depositInput" type="number" inputmode="decimal" step="0.01" autocomplete="off">
     <div class="deposit-actions">
       <button type="button" id="cancelDeposit">Cancel</button>
@@ -90,9 +90,10 @@ const depositInput=document.getElementById('depositInput');
 let startingDeposit=200;
 function openDepositEditor(){
   const date=selectedDay+1;
-  document.getElementById('depositTitle').textContent='Edit '+date+' November';
-  document.getElementById('depositDescription').textContent='Change the daily result. The deposit balance and all following days will recalculate automatically.';
-  depositInput.value=String(amounts[selectedDay]);
+  document.getElementById('depositTitle').textContent='Edit balance · '+date+' November';
+  document.getElementById('depositDescription').textContent='Enter the balance you want for this date. The daily result and every following balance will be recalculated.';
+  const points=chartPoints();
+  depositInput.value=String(points[selectedDay+1].balance);
   depositBackdrop.classList.add('open');
   depositBackdrop.setAttribute('aria-hidden','false');
   depositInput.focus();
@@ -105,9 +106,11 @@ value.addEventListener('click',openDepositEditor);
 document.getElementById('cancelDeposit').addEventListener('click',closeDepositEditor);
 depositBackdrop.addEventListener('click',event=>{if(event.target===depositBackdrop)closeDepositEditor();});
 document.getElementById('saveDeposit').addEventListener('click',()=>{
-  const next=Number(depositInput.value);
-  if(!Number.isFinite(next)){depositInput.focus();return;}
-  amounts[selectedDay]=Math.round(next*100)/100;
+  const targetBalance=Number(depositInput.value);
+  if(!Number.isFinite(targetBalance)){depositInput.focus();return;}
+  const points=chartPoints();
+  const previousBalance=points[selectedDay].balance;
+  amounts[selectedDay]=Math.round((targetBalance-previousBalance)*100)/100;
   try{localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));}catch(error){}
   closeDepositEditor();
   choose(selectedDay);
