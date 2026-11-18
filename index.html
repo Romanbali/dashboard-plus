@@ -88,10 +88,15 @@ const curves=[
 function choose(i){
   [...days.children].forEach((el,n)=>{el.classList.toggle('selected',n===i);el.classList.toggle('dim',n===7&&i!==7);el.setAttribute('aria-pressed',String(n===i));});
   value.textContent='$'+amounts[i];
-  const x=Math.max(30,Math.min(940,788+(i-16)*25)), y=Math.max(18,Math.min(160,22-(i-16)*3.4));
+  const active=document.getElementById('activeLine');
+  const future=document.querySelector('.future');
+  const activeLength=active.getTotalLength(), futureLength=future.getTotalLength();
+  const point=i<=16
+    ? active.getPointAtLength(activeLength*(i/16))
+    : future.getPointAtLength(futureLength*((i-16)/14));
+  const x=point.x, y=point.y;
   const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo');
   marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
-
   const pillX=Math.max(0,Math.min(790,x-75));value.style.left=(pillX/960*94.6+2.7)+'%';
   document.getElementById('activeLine').style.opacity='1';
 }
