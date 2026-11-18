@@ -60,14 +60,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 <script>
 const days=document.getElementById('days');
 const value=document.getElementById('value');
-const dates=Array.from({length:31},(_,i)=>i+1);
-const amounts=dates.map(d=>Math.round(70+35*Math.sin(d*.48)+d*2.2));
-amounts[10]=84;amounts[11]=91;amounts[12]=76;amounts[13]=102;amounts[14]=109;amounts[15]=116;amounts[16]=123;amounts[17]=128;
-const weekdays=['Wed','Thu','Fri','Sat','Sun','Mon','Tue'];
+const dates=Array.from({length:30},(_,i)=>i+1);
+const amounts=[15,15,15,15,-105,30,30,30,30,-93,30,-109,30,30,30,30,-95,15,15,15,15,15,15,15,15,15,15,15,15,15];
+const weekdays=['Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
 dates.forEach(date=>{
   const btn=document.createElement('button');
   btn.type='button';btn.className='day'+(date===18?' dim':'');
-  btn.innerHTML='<span class="weekday">'+weekdays[(date-11+70)%7]+'</span><span class="date">'+date+'</span>';
+  btn.innerHTML='<span class="weekday">'+weekdays[(date-1)%7]+'</span><span class="date">'+date+'</span>';
   btn.addEventListener('click',()=>choose(date-1));
   days.appendChild(btn);
 });
@@ -87,7 +86,39 @@ const curves=[
 ];
 function choose(i){
   [...days.children].forEach((el,n)=>{el.classList.toggle('future',n>16);el.classList.toggle('dim',n>16);el.setAttribute('aria-pressed',String(n===i));});
-  value.textContent='$'+amounts[i];
+  value.textContent=amounts[i]<0?'-
+  const active=document.getElementById('activeLine');
+  const future=document.querySelector('.future');
+  const activeLength=active.getTotalLength(), futureLength=future.getTotalLength();
+  const point=i<=16
+    ? active.getPointAtLength(activeLength*(i/16))
+    : future.getPointAtLength(futureLength*((i-16)/14));
+  const x=point.x, y=point.y;
+  const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo');
+  marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
+  const pillX=Math.max(0,Math.min(790,x-75));value.style.left=(pillX/960*94.6+2.7)+'%';
+  document.getElementById('activeLine').style.opacity='1';
+}
+[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
+</script>
+</body>
+</html>+Math.abs(amounts[i]):'
+  const active=document.getElementById('activeLine');
+  const future=document.querySelector('.future');
+  const activeLength=active.getTotalLength(), futureLength=future.getTotalLength();
+  const point=i<=16
+    ? active.getPointAtLength(activeLength*(i/16))
+    : future.getPointAtLength(futureLength*((i-16)/14));
+  const x=point.x, y=point.y;
+  const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo');
+  marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
+  const pillX=Math.max(0,Math.min(790,x-75));value.style.left=(pillX/960*94.6+2.7)+'%';
+  document.getElementById('activeLine').style.opacity='1';
+}
+[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
+</script>
+</body>
+</html>+amounts[i];
   const active=document.getElementById('activeLine');
   const future=document.querySelector('.future');
   const activeLength=active.getTotalLength(), futureLength=future.getTotalLength();
