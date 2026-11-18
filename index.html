@@ -77,6 +77,32 @@ days.children[16].classList.add('selected');
 days.children[16].setAttribute('aria-pressed','true');
 document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
 
+function chartPoints(){
+  const min=Math.min(...amounts), max=Math.max(...amounts);
+  const span=max-min||1;
+  return amounts.map((amount,index)=>({
+    x:20+(920*index/(amounts.length-1)),
+    y:24+132*((max-amount)/span)
+  }));
+}
+
+function curvePath(points,from,to){
+  if(from>to) return '';
+  let d='M '+points[from].x+' '+points[from].y;
+  for(let i=from;i<to;i++){
+    const p0=points[Math.max(0,i-1)];
+    const p1=points[i];
+    const p2=points[i+1];
+    const p3=points[Math.min(points.length-1,i+2)];
+    const c1x=p1.x+(p2.x-p0.x)/6;
+    const c1y=p1.y+(p2.y-p0.y)/6;
+    const c2x=p2.x-(p3.x-p1.x)/6;
+    const c2y=p2.y-(p3.y-p1.y)/6;
+    d+=' C '+c1x+' '+c1y+' '+c2x+' '+c2y+' '+p2.x+' '+p2.y;
+  }
+  return d;
+}
+
 function choose(i){
   [...days.children].forEach((el,n)=>{
     el.classList.toggle('dim',n>16);
@@ -86,14 +112,13 @@ function choose(i){
   const amount=amounts[i];
   value.textContent=amount<0?'-$'+Math.abs(amount):'$'+amount;
 
+  const points=chartPoints();
   const active=document.getElementById('activeLine');
   const futurePath=document.querySelector('svg path.future');
-  const activeLength=active.getTotalLength();
-  const futureLength=futurePath.getTotalLength();
-  const point=i<=16
-    ? active.getPointAtLength(activeLength*(i/16))
-    : futurePath.getPointAtLength(futureLength*((i-16)/13));
+  active.setAttribute('d',curvePath(points,0,i));
+  futurePath.setAttribute('d',curvePath(points,i,points.length-1));
 
+  const point=points[i];
   const marker=document.querySelector('.marker');
   const halo=document.querySelector('.marker-halo');
   marker.setAttribute('cx',point.x);
