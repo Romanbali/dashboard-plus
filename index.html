@@ -3,9 +3,186 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hello, world!</title>
+  <meta name="theme-color" content="#063b9e">
+  <title>Dashboard Plus — Earnings</title>
+  <style>
+    :root{color-scheme:dark;--bg:#06358f;--cyan:#31eaff;--pink:#ff4fb8;--muted:#a9c7f7}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f5f9ff}
+    body{min-height:100vh;background:radial-gradient(ellipse at 50% 15%,#0d56c9 0%,#0845aa 38%,#06358f 75%,#052b77 100%);overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.035),transparent 42%),radial-gradient(ellipse at 50% 100%,rgba(0,128,255,.25),transparent 55%)}
+    .app{width:min(1080px,100%);margin:0 auto;padding:34px 30px 60px;position:relative}
+    .topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 2px 28px}
+    .month-title{font-size:clamp(28px,4vw,42px);font-weight:400;letter-spacing:.015em;margin:0;text-align:center;flex:1}
+    .month-nav{display:flex;gap:8px}
+    button{font:inherit;color:inherit;cursor:pointer}
+    .nav-btn{width:40px;height:40px;border:1px solid rgba(190,220,255,.18);border-radius:13px;background:rgba(255,255,255,.09);backdrop-filter:blur(12px);font-size:20px;transition:.2s}
+    .nav-btn:hover{background:rgba(255,255,255,.17);transform:translateY(-1px)}
+    .chart-panel{position:relative;height:300px;margin:0 0 8px}
+    #chart{width:100%;height:100%;overflow:visible;display:block}
+    .chart-grid line{stroke:rgba(207,229,255,.11);stroke-width:1;stroke-dasharray:3 8}
+    .chart-area{fill:url(#areaFill);opacity:.7}
+    .chart-line{fill:none;stroke:#31eaff;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;filter:url(#glow)}
+    .chart-line-under{fill:none;stroke:rgba(49,234,255,.22);stroke-width:11;stroke-linecap:round;filter:url(#glow)}
+    .future-line{fill:none;stroke:rgba(230,245,255,.82);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1 7}
+    .guide{stroke:rgba(255,255,255,.75);stroke-width:1.4}
+    .point-halo{fill:rgba(49,234,255,.22);filter:url(#glow)}
+    .point{fill:#fff;stroke:#d7fbff;stroke-width:2}
+    .value-pill{fill:rgba(202,225,255,.27);stroke:rgba(255,255,255,.13);stroke-width:1}
+    .value-text{font-size:22px;fill:#fff;font-weight:500;text-anchor:middle}
+    .chart-caption{display:flex;justify-content:space-between;color:rgba(221,237,255,.66);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:0 8px}
+    .calendar-wrap{position:relative;margin-top:12px}
+    .calendar-head{display:flex;justify-content:space-between;align-items:center;margin:0 4px 13px;color:rgba(225,240,255,.72);font-size:13px}
+    .calendar-head strong{font-weight:500;color:#fff;font-size:14px}
+    .scroll-controls{display:flex;gap:7px}
+    .scroll-btn{border:0;background:transparent;color:#d5e8ff;opacity:.75;font-size:20px;padding:0 5px}
+    .days{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding:5px 3px 15px;scroll-snap-type:x mandatory;overscroll-behavior-x:contain}
+    .days::-webkit-scrollbar{display:none}
+    .day{flex:0 0 104px;height:126px;border:1px solid rgba(198,224,255,.12);border-radius:25px;background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.055));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 28px rgba(0,20,75,.12);backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;scroll-snap-align:center;transition:transform .2s,border-color .2s,box-shadow .2s,background .2s}
+    .day:hover{transform:translateY(-3px);background:rgba(255,255,255,.17)}
+    .day .weekday{font-size:17px;color:#e3efff}
+    .day .date{font-size:37px;font-weight:600;line-height:1}
+    .day .amount{font-size:12px;color:rgba(214,235,255,.68)}
+    .day.selected{border:2px solid #ff61c0;box-shadow:0 0 8px #ff4fb8,0 0 24px rgba(255,79,184,.48),inset 0 0 14px rgba(255,79,184,.12);background:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.08))}
+    .day.selected .date{ text-shadow:0 0 15px rgba(255,255,255,.4)}
+    .day.negative .amount{color:#ff9acb}
+    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+    .metric{padding:17px 19px;border:1px solid rgba(195,222,255,.12);border-radius:19px;background:rgba(255,255,255,.075);backdrop-filter:blur(14px)}
+    .metric-label{font-size:12px;color:rgba(213,232,255,.65);margin-bottom:8px}
+    .metric-value{font-size:23px;font-weight:600;letter-spacing:-.02em}
+    .positive{color:#8cf7e5}.negative-text{color:#ff9acb}
+    .hint{text-align:center;color:rgba(207,229,255,.55);font-size:12px;margin:22px 0 0}
+    @media(max-width:640px){.app{padding:24px 16px 42px}.topline{margin-bottom:14px}.chart-panel{height:240px}.day{flex-basis:84px;height:112px;border-radius:21px}.day .weekday{font-size:15px}.day .date{font-size:32px}.days{gap:9px}.summary{gap:8px;margin-top:18px}.metric{padding:13px 12px;border-radius:15px}.metric-label{font-size:10px}.metric-value{font-size:18px}.month-title{font-size:28px}.nav-btn{width:35px;height:35px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
+  <main class="app">
+    <header class="topline">
+      <div class="month-nav"><button class="nav-btn" id="prevMonth" aria-label="Предыдущий месяц">‹</button></div>
+      <h1 class="month-title" id="monthTitle">November 2016</h1>
+      <div class="month-nav"><button class="nav-btn" id="nextMonth" aria-label="Следующий месяц">›</button></div>
+    </header>
+
+    <section class="chart-panel" aria-label="График заработка за месяц">
+      <svg id="chart" viewBox="0 0 1000 300" role="img" aria-label="Плавный график накопленного заработка за месяц">
+        <defs>
+          <filter id="glow" x="-40%" y="-100%" width="180%" height="300%"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#31eaff" stop-opacity=".23"/><stop offset="1" stop-color="#31eaff" stop-opacity="0"/></linearGradient>
+        </defs>
+        <g class="chart-grid"><line x1="12" y1="72" x2="988" y2="72"/><line x1="12" y1="150" x2="988" y2="150"/><line x1="12" y1="228" x2="988" y2="228"/></g>
+        <path id="areaPath" class="chart-area"></path>
+        <path id="underPath" class="chart-line-under"></path>
+        <path id="mainPath" class="chart-line"></path>
+        <path id="futurePath" class="future-line"></path>
+        <line id="guide" class="guide" x1="0" y1="0" x2="0" y2="280"/>
+        <circle id="halo" class="point-halo" r="19" cx="0" cy="0"/>
+        <circle id="point" class="point" r="8" cx="0" cy="0"/>
+        <rect id="valuePill" class="value-pill" x="0" y="0" width="150" height="48" rx="9"/>
+        <text id="valueText" class="value-text" x="0" y="0">$123</text>
+      </svg>
+    </section>
+    <div class="chart-caption"><span>Monthly earnings</span><span id="monthTotal">Total · $2,840</span></div>
+
+    <section class="calendar-wrap">
+      <div class="calendar-head">
+        <div><strong>Daily overview</strong> <span>· выбери день</span></div>
+        <div class="scroll-controls">
+          <button class="scroll-btn" id="scrollLeft" aria-label="Прокрутить даты влево">‹</button>
+          <button class="scroll-btn" id="scrollRight" aria-label="Прокрутить даты вправо">›</button>
+        </div>
+      </div>
+      <div class="days" id="days" tabindex="0" aria-label="Дни месяца, прокручивайте влево и вправо"></div>
+    </section>
+
+    <section class="summary" aria-live="polite">
+      <article class="metric"><div class="metric-label">Заработок за выбранный день</div><div class="metric-value positive" id="selectedAmount">$123</div></article>
+      <article class="metric"><div class="metric-label">Накоплено за месяц</div><div class="metric-value" id="runningTotal">$2,840</div></article>
+      <article class="metric"><div class="metric-label">Лучший день</div><div class="metric-value" id="bestDay">$286</div></article>
+    </section>
+    <p class="hint">Листай даты горизонтально · график показывает накопленный заработок с начала месяца</p>
+  </main>
+  <script>
+    const state={year:2016,month:10,selected:16};
+    const money=n=>(n<0?'−$':'$')+Math.abs(Math.round(n)).toLocaleString('en-US');
+    const monthName=d=>d.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    const shortDay=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    function makeData(){
+      const count=new Date(state.year,state.month+1,0).getDate();
+      let total=0;const values=[];
+      for(let i=0;i<count;i++){
+        // Smooth, mostly-positive sample earnings; occasional small down days.
+        const base=64+26*Math.sin(i*.62)+17*Math.cos(i*.29)+(i%6)*4;
+        const delta=(i===8||i===22)?-18:Math.max(8,base);
+        total+=delta;values.push({delta:Math.round(delta),total:Math.round(total)});
+      }
+      return values;
+    }
+    let data=makeData();
+    const daysEl=document.getElementById('days');
+    const svg={main:document.getElementById('mainPath'),under:document.getElementById('underPath'),area:document.getElementById('areaPath'),future:document.getElementById('futurePath')};
+    const chartW=976,left=12,top=34,bottom=258;
+    function points(){
+      const max=Math.max(...data.map(x=>x.total))*1.08;
+      const min=Math.min(0,...data.map(x=>x.total));
+      const range=Math.max(1,max-min);
+      return data.map((d,i)=>({x:left+i*(chartW/Math.max(1,data.length-1)),y:bottom-(d.total-min)/range*(bottom-top),...d}));
+    }
+    function smoothPath(pts){
+      if(!pts.length)return '';
+      let d='M '+pts[0].x+' '+pts[0].y;
+      for(let i=0;i<pts.length-1;i++){
+        const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];
+        const c1x=p1.x+(p2.x-p0.x)/6,c1y=p1.y+(p2.y-p0.y)/6;
+        const c2x=p2.x-(p3.x-p1.x)/6,c2y=p2.y-(p3.y-p1.y)/6;
+        d+=' C '+c1x+' '+c1y+' '+c2x+' '+c2y+' '+p2.x+' '+p2.y;
+      }
+      return d;
+    }
+    function renderChart(){
+      const pts=points(),idx=state.selected;
+      const past=pts.slice(0,idx+1),future=pts.slice(idx);
+      const path=smoothPath(past),full=smoothPath(pts);
+      svg.main.setAttribute('d',path);svg.under.setAttribute('d',path);
+      svg.area.setAttribute('d',path+' L '+past[past.length-1].x+' '+bottom+' L '+past[0].x+' '+bottom+' Z');
+      svg.future.setAttribute('d',smoothPath(future));
+      const p=pts[idx],guide=document.getElementById('guide');
+      guide.setAttribute('x1',p.x);guide.setAttribute('x2',p.x);
+      guide.setAttribute('y1',p.y+10);guide.setAttribute('y2',286);
+      ['halo','point'].forEach(id=>{document.getElementById(id).setAttribute('cx',p.x);document.getElementById(id).setAttribute('cy',p.y)});
+      const pill=document.getElementById('valuePill'),tx=document.getElementById('valueText');
+      const px=Math.max(8,Math.min(842,p.x-75)),py=Math.max(2,p.y-76);
+      pill.setAttribute('x',px);pill.setAttribute('y',py);tx.setAttribute('x',px+75);tx.setAttribute('y',py+31);tx.textContent=money(p.total);
+      document.getElementById('monthTotal').textContent='Total · '+money(data[data.length-1].total);
+      document.getElementById('selectedAmount').textContent=money(p.delta);
+      document.getElementById('selectedAmount').className='metric-value '+(p.delta<0?'negative-text':'positive');
+      document.getElementById('runningTotal').textContent=money(p.total);
+      const best=Math.max(...data.map(d=>d.delta));document.getElementById('bestDay').textContent=money(best);
+    }
+    function renderDays(){
+      daysEl.innerHTML='';
+      data.forEach((d,i)=>{
+        const date=new Date(state.year,state.month,i+1);
+        const btn=document.createElement('button');btn.className='day'+(i===state.selected?' selected':'')+(d.delta<0?' negative':'');
+        btn.type='button';btn.setAttribute('aria-pressed',String(i===state.selected));
+        btn.innerHTML='<span class="weekday">'+shortDay[date.getDay()]+'</span><span class="date">'+(i+1)+'</span><span class="amount">'+money(d.delta)+'</span>';
+        btn.addEventListener('click',()=>selectDay(i,true));daysEl.appendChild(btn);
+      });
+    }
+    function selectDay(i,center){
+      state.selected=Math.max(0,Math.min(data.length-1,i));renderDays();renderChart();
+      if(center){const active=daysEl.children[state.selected];active.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
+    }
+    function renderMonth(){
+      document.getElementById('monthTitle').textContent=monthName(new Date(state.year,state.month,1));
+      data=makeData();state.selected=Math.min(state.selected,data.length-1);renderDays();renderChart();
+      daysEl.scrollTo({left:0,behavior:'smooth'});
+    }
+    document.getElementById('prevMonth').addEventListener('click',()=>{state.month--;if(state.month<0){state.month=11;state.year--;}renderMonth();});
+    document.getElementById('nextMonth').addEventListener('click',()=>{state.month++;if(state.month>11){state.month=0;state.year++;}renderMonth();});
+    document.getElementById('scrollLeft').addEventListener('click',()=>daysEl.scrollBy({left:-360,behavior:'smooth'}));
+    document.getElementById('scrollRight').addEventListener('click',()=>daysEl.scrollBy({left:360,behavior:'smooth'}));
+    renderMonth();selectDay(16,false);
+  </script>
 </body>
 </html>
