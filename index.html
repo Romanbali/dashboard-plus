@@ -29,9 +29,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .day{flex:0 0 calc(min(100vw,1024px)*.1006);width:calc(min(100vw,1024px)*.1006);height:100%;border:1px solid rgba(206,224,255,.09);border-radius:calc(min(100vw,1024px)*.0234);background:linear-gradient(145deg,rgba(255,255,255,.135),rgba(255,255,255,.065));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 7px 19px rgba(0,20,75,.13);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:13px;gap:11px;color:#f5f7ff;cursor:pointer;user-select:none;position:relative;white-space:nowrap}
 .day .weekday{font-size:clamp(11px,2.35vw,24px);font-weight:400;line-height:1.1;color:#edf3ff}
 .day .date{font-size:clamp(17px,4.05vw,41px);line-height:1.05;font-weight:600;letter-spacing:-.025em}
-.day.selected{border:2px solid #ff5fbd;box-shadow:0 0 5px 1px #ff55b9,0 0 15px 2px rgba(255,69,181,.82),inset 0 0 8px rgba(255,89,192,.16);padding-top:12px}
-.day.dim{background:rgba(255,255,255,.045);border-color:rgba(190,215,255,.035);box-shadow:none}
-.day.dim .weekday,.day.dim .date{color:rgba(180,204,239,.42)}
+.day.past{border-color:rgba(100,220,255,.48);box-shadow:0 0 7px rgba(40,205,255,.22),inset 0 0 10px rgba(70,205,255,.09)}\n.day.selected{border:2px solid #ff5fbd;box-shadow:0 0 5px 1px #ff55b9,0 0 15px 2px rgba(255,69,181,.82),inset 0 0 8px rgba(255,89,192,.16);padding-top:12px}
+.day.dim,.day.future{background:rgba(255,255,255,.045);border-color:rgba(190,215,255,.035);box-shadow:none}
+.day.dim .weekday,.day.dim .date,.day.future .weekday,.day.future .date{color:rgba(180,204,239,.42)}
 @media(max-width:600px){.day{border-radius:clamp(9px,2.35vw,24px);padding-top:1.25vw;gap:1.05vw}.day.selected{padding-top:1.1vw}}
 </style>
 </head>
@@ -86,7 +86,7 @@ const curves=[
 'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22'
 ];
 function choose(i){
-  [...days.children].forEach((el,n)=>{el.classList.toggle('selected',n===i);el.classList.toggle('dim',n===7&&i!==7);el.setAttribute('aria-pressed',String(n===i));});
+  [...days.children].forEach((el,n)=>{el.classList.toggle('selected',n===i);el.classList.toggle('past',n<i);el.classList.toggle('future',n>i);el.classList.toggle('dim',n>i);el.setAttribute('aria-pressed',String(n===i));});
   value.textContent='$'+amounts[i];
   const active=document.getElementById('activeLine');
   const future=document.querySelector('.future');
