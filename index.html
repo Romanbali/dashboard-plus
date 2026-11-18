@@ -1,8 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" translate="no" class="notranslate">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
 <meta name="theme-color" content="#022b80">
 <title>November 2016</title>
 <style>
@@ -33,7 +35,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 @media(max-width:600px){.day{border-radius:clamp(9px,2.35vw,24px);padding-top:1.25vw;gap:1.05vw}.day.selected{padding-top:1.1vw}}
 </style>
 </head>
-<body>
+<body translate="no" class="notranslate">
 <main class="stage" aria-label="Monthly earnings dashboard">
   <h1 class="month" id="monthTitle">November 2016</h1>
   <div class="chart">
@@ -42,9 +44,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
         <filter id="blur" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
         <filter id="lineGlow" x="-40%" y="-100%" width="180%" height="300%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
-      <path class="glow" d="M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22"/>
-      <path class="line" id="activeLine" d="M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22"/>
-      <path class="future" d="M609 22 C659 19 671 61 728 58 C772 55 789 75 832 91 C868 103 894 67 929 80 C941 85 950 88 960 87"/>
+      <path class="glow" d="M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22"/>
+      <path class="line" id="activeLine" d="M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22"/>
+      <path class="future" d="M788 22 C824 19 836 61 870 58 C900 55 913 75 930 83 C941 88 950 86 960 87"/>
       <line class="marker-line" x1="580" y1="30" x2="580" y2="240"/>
       <circle class="marker-halo" cx="580" cy="30" r="19"/>
       <circle class="marker" cx="580" cy="30" r="8.5"/>
@@ -71,21 +73,22 @@ dates.forEach(date=>{
 });
 days.children[16].classList.add('selected');
 days.children[16].setAttribute('aria-pressed','true');
+choose(16);
 document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
 const curves=[
-'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
-'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
-'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
-'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
-'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
-'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
-'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22',
-'M0 146 C38 119 61 64 126 68 C190 70 215 147 282 157 C345 166 365 105 417 94 C454 86 469 107 502 95 C547 78 568 37 609 22'
+'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
+'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
+'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
+'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
+'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
+'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
+'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22',
+'M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22'
 ];
 function choose(i){
   [...days.children].forEach((el,n)=>{el.classList.toggle('selected',n===i);el.classList.toggle('dim',n===7&&i!==7);el.setAttribute('aria-pressed',String(n===i));});
   value.textContent='$'+amounts[i];
-  const x=Math.max(0,Math.min(940,580+(i-16)*27)), y=Math.max(18,Math.min(160,30-(i-16)*3.4));
+  const x=Math.max(30,Math.min(940,788+(i-16)*25)), y=Math.max(18,Math.min(160,30-(i-16)*3.4));
   const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo'),guide=document.querySelector('.marker-line');
   marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
   guide.setAttribute('x1',x);guide.setAttribute('x2',x);guide.setAttribute('y1',y+10);
