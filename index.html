@@ -78,18 +78,14 @@ days.children[16].setAttribute('aria-pressed','true');
 document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
 
 function chartPoints(){
-  // Light low-pass smoothing softens isolated daily jumps while preserving the overall price direction.
-  const smoothed=amounts.map((amount,index)=>{
-    const before=amounts[Math.max(0,index-1)];
-    const after=amounts[Math.min(amounts.length-1,index+1)];
-    return before*0.2+amount*0.6+after*0.2;
+  const scale=55;
+  return amounts.map((amount,index)=>{
+    const visualValue=Math.asinh(amount/scale);
+    return {
+      x:20+(920*index/(amounts.length-1)),
+      y:96-43*visualValue
+    };
   });
-  const min=Math.min(...amounts), max=Math.max(...amounts);
-  const span=max-min||1;
-  return smoothed.map((amount,index)=>({
-    x:20+(920*index/(smoothed.length-1)),
-    y:30+120*((max-amount)/span)
-  }));
 }
 
 function curvePath(points,from,to){
