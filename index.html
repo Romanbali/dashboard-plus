@@ -88,7 +88,7 @@ const curves=[
 function choose(i){
   [...days.children].forEach((el,n)=>{el.classList.toggle('selected',n===i);el.classList.toggle('dim',n===7&&i!==7);el.setAttribute('aria-pressed',String(n===i));});
   value.textContent='$'+amounts[i];
-  const x=Math.max(30,Math.min(940,788+(i-16)*25)), y=Math.max(18,Math.min(160,30-(i-16)*3.4));
+  const x=Math.max(30,Math.min(940,788+(i-16)*25)), y=Math.max(18,Math.min(160,22-(i-16)*3.4));
   const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo'),guide=document.querySelector('.marker-line');
   marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
   guide.setAttribute('x1',x);guide.setAttribute('x2',x);guide.setAttribute('y1',y+10);
