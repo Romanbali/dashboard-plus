@@ -219,7 +219,13 @@ function choose(i){
   value.style.left=(pillX/960*94.6+2.7)+'%';
 }
 
-document.getElementById('daysWindow').scrollLeft=10*(Math.min(window.innerWidth,1024)*.1006+Math.min(window.innerWidth,1024)*.0127);
+const daysWindow=document.getElementById('daysWindow');
+const firstDay=days.children[0];
+const dayStyle=getComputedStyle(days);
+const dayGap=parseFloat(dayStyle.columnGap||dayStyle.gap)||0;
+const dayStride=firstDay.getBoundingClientRect().width+dayGap;
+// Keep today's card in the same near-right position as the original design.
+daysWindow.scrollLeft=Math.max(0,todayIndex-6)*dayStride;
 choose(todayIndex);
 </script>
 </body>
