@@ -134,6 +134,49 @@ function choose(i){
   const balanceIndex=i+1;
   const point=points[balanceIndex];
   value.textContent='
+  const halo=document.querySelector('.marker-halo');
+  marker.setAttribute('cx',point.x);
+  marker.setAttribute('cy',point.y);
+  halo.setAttribute('cx',point.x);
+  halo.setAttribute('cy',point.y);
+
+  const pillX=Math.max(0,Math.min(790,point.x-75));
+  value.style.left=(pillX/960*94.6+2.7)+'%';
+}
+
+[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
+choose(16);
+</script>
+</body>
+</html>
++point.balance;
+
+  const active=document.getElementById('activeLine');
+  const futurePath=document.querySelector('svg path.future');
+  const activeCurve=curvePath(points,0,balanceIndex);
+  active.setAttribute('d',activeCurve);
+  document.querySelector('svg path.glow').setAttribute('d',activeCurve);
+  futurePath.setAttribute('d',curvePath(points,balanceIndex,points.length-1));
+
+
+  const marker=document.querySelector('.marker');
+  const halo=document.querySelector('.marker-halo');
+  marker.setAttribute('cx',point.x);
+  marker.setAttribute('cy',point.y);
+  halo.setAttribute('cx',point.x);
+  halo.setAttribute('cy',point.y);
+
+  const pillX=Math.max(0,Math.min(790,point.x-75));
+  value.style.left=(pillX/960*94.6+2.7)+'%';
+}
+
+[...days.children].forEach((el,i)=>el.addEventListener('click',()=>choose(i)));
+choose(16);
+</script>
+</body>
+</html>
++point.balance;
+
   const marker=document.querySelector('.marker');
   const halo=document.querySelector('.marker-halo');
   marker.setAttribute('cx',point.x);
