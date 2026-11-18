@@ -148,7 +148,9 @@ amounts.forEach((amount,index)=>{
   const btn=document.createElement('button');
   btn.type='button';
   btn.className='day'+(date>todayDate?' dim':'');
-  const amountLabel=amount<0?'-
+  const dollar=String.fromCharCode(36);
+  const amountLabel=amount<0?'-'+dollar+Math.abs(amount):dollar+amount;
+  btn.innerHTML='<span class="weekday">'+weekdays[index%7]+'</span><span class="date">'+date+'</span><span class="amount '+(amount<0?'negative':'positive')+'">'+amountLabel+'</span>';
   btn.setAttribute('aria-pressed',String(index===todayIndex));
   btn.addEventListener('click',()=>choose(index));
   days.appendChild(btn);
