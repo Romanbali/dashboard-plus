@@ -47,7 +47,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
       <path class="glow" d="M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22"/>
       <path class="line" id="activeLine" d="M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22"/>
       <path class="future" d="M788 22 C824 19 836 61 870 58 C900 55 913 75 930 83 C941 88 950 86 960 87"/>
-      <line class="marker-line" x1="580" y1="30" x2="580" y2="240"/>
+      
       <circle class="marker-halo" cx="580" cy="30" r="19"/>
       <circle class="marker" cx="580" cy="30" r="8.5"/>
     </svg>
@@ -89,9 +89,9 @@ function choose(i){
   [...days.children].forEach((el,n)=>{el.classList.toggle('selected',n===i);el.classList.toggle('dim',n===7&&i!==7);el.setAttribute('aria-pressed',String(n===i));});
   value.textContent='$'+amounts[i];
   const x=Math.max(30,Math.min(940,788+(i-16)*25)), y=Math.max(18,Math.min(160,22-(i-16)*3.4));
-  const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo'),guide=document.querySelector('.marker-line');
+  const marker=document.querySelector('.marker'),halo=document.querySelector('.marker-halo');
   marker.setAttribute('cx',x);marker.setAttribute('cy',y);halo.setAttribute('cx',x);halo.setAttribute('cy',y);
-  guide.setAttribute('x1',x);guide.setAttribute('x2',x);guide.setAttribute('y1',y+10);
+
   const pillX=Math.max(0,Math.min(790,x-75));value.style.left=(pillX/960*94.6+2.7)+'%';
   document.getElementById('activeLine').style.opacity='1';
 }
