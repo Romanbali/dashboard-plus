@@ -88,10 +88,14 @@ const value=document.getElementById('value');
 const depositBackdrop=document.getElementById('depositBackdrop');
 const depositInput=document.getElementById('depositInput');
 let startingDeposit=200;
+try{
+  const savedStart=localStorage.getItem('dashboardPlusStartingDeposit');
+  if(savedStart!==null&&Number.isFinite(Number(savedStart))) startingDeposit=Number(savedStart);
+}catch(error){}
 function openDepositEditor(){
   const date=selectedDay+1;
   document.getElementById('depositTitle').textContent='Edit balance · '+date+' November';
-  document.getElementById('depositDescription').textContent='Enter the balance you want for this date. The daily result and every following balance will be recalculated.';
+  document.getElementById('depositDescription').textContent='Enter the balance you want for this date. The starting deposit and all previous and following balances will be recalculated consistently.';
   const points=chartPoints();
   depositInput.value=String(points[selectedDay+1].balance);
   depositBackdrop.classList.add('open');
@@ -108,15 +112,14 @@ depositBackdrop.addEventListener('click',event=>{if(event.target===depositBackdr
 document.getElementById('saveDeposit').addEventListener('click',()=>{
   const targetBalance=Number(depositInput.value);
   if(!Number.isFinite(targetBalance)){depositInput.focus();return;}
-  const points=chartPoints();
-  const previousBalance=points[selectedDay].balance;
   const exactBalance=Math.round(targetBalance*100)/100;
-  amounts[selectedDay]=Math.round((exactBalance-previousBalance)*100)/100;
-  balanceOverrides[selectedDay]=exactBalance;
-  for(let i=selectedDay+1;i<balanceOverrides.length;i++) balanceOverrides[i]=null;
+  const cumulativeChange=amounts.slice(0,selectedDay+1).reduce((sum,amount)=>sum+amount,0);
+  startingDeposit=Math.round((exactBalance-cumulativeChange)*100)/100;
+  balanceOverrides=Array(30).fill(null);
   try{
     localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));
-    localStorage.setItem('dashboardPlusBalanceOverrides',JSON.stringify(balanceOverrides));
+    localStorage.setItem('dashboardPlusStartingDeposit',String(startingDeposit));
+    localStorage.removeItem('dashboardPlusBalanceOverrides');
   }catch(error){}
   closeDepositEditor();
   choose(selectedDay);
@@ -149,16 +152,22 @@ amounts.forEach((amount,index)=>{
 let balanceOverrides=Array(30).fill(null);
 try{
   const savedOverrides=JSON.parse(localStorage.getItem('dashboardPlusBalanceOverrides')||'null');
-  if(Array.isArray(savedOverrides)&&savedOverrides.length===30) balanceOverrides=savedOverrides.map(v=>v===null?null:(Number.isFinite(Number(v))?Number(v):null));
+  if(Array.isArray(savedOverrides)&&savedOverrides.length===30){
+    const anchorIndex=savedOverrides.reduce((last,value,index)=>value!==null?index:last,-1);
+    if(anchorIndex>=0){
+      const anchorBalance=Number(savedOverrides[anchorIndex]);
+      const cumulative=amounts.slice(0,anchorIndex+1).reduce((sum,amount)=>sum+amount,0);
+      if(Number.isFinite(anchorBalance)) startingDeposit=Math.round((anchorBalance-cumulative)*100)/100;
+      localStorage.setItem('dashboardPlusStartingDeposit',String(startingDeposit));
+      localStorage.removeItem('dashboardPlusBalanceOverrides');
+    }
+  }
 }catch(error){}
 
 function chartPoints(){
   const balances=[startingDeposit];
   amounts.forEach((change,index)=>{
-    const override=balanceOverrides[index];
-    const nextBalance=override===null
-      ? balances[index]+change
-      : Math.round(Number(override)*100)/100;
+    const nextBalance=balances[index]+change;
     balances.push(Math.round(nextBalance*100)/100);
   });
   const min=Math.min(...balances);
