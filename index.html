@@ -271,8 +271,22 @@ const dayStyle=getComputedStyle(days);
 const dayGap=parseFloat(dayStyle.columnGap||dayStyle.gap)||0;
 const dayStride=firstDay.getBoundingClientRect().width+dayGap;
 // Keep today's card in the same near-right position as the original design.
-daysWindow.scrollLeft=Math.max(0,todayIndex-6)*dayStride;
-choose(todayIndex);
+function scrollCalendarToToday(smooth=true){
+  const stride=days.children[0].getBoundingClientRect().width+
+    (parseFloat(getComputedStyle(days).columnGap||getComputedStyle(days).gap)||0);
+  const target=Math.max(0,todayIndex-6)*stride;
+  daysWindow.scrollTo({left:target,behavior:smooth?'smooth':'auto'});
+  choose(todayIndex);
+}
+scrollCalendarToToday(false);
+window.addEventListener('resize',()=>choose(selectedDay));
+
+// Tapping the empty dashboard background returns the calendar to today.
+// Chart, balance pill and date cards keep their own interactions.
+document.querySelector('.stage').addEventListener('click',event=>{
+  if(event.target.closest('.chart, #value, .days-window')) return;
+  scrollCalendarToToday(true);
+});
 window.addEventListener('resize',()=>choose(selectedDay));
 </script>
 </body>
