@@ -497,8 +497,25 @@ function choose(i){
   const forecastY=forecastChartRect.top-forecastStageRect.top+(forecastPoint.y/240)*forecastChartRect.height;
   const forecastWidth=forecastValue.getBoundingClientRect().width;
   const forecastHeight=forecastValue.getBoundingClientRect().height;
-  forecastValue.style.left=Math.max(4,Math.min(forecastStageRect.width-forecastWidth-4,forecastX-forecastWidth/2))+'px';
-  forecastValue.style.top=Math.max(4,forecastY-forecastHeight-10)+'px';
+  const forecastLeft=Math.max(4,Math.min(forecastStageRect.width-forecastWidth-4,forecastX-forecastWidth/2));
+  const forecastAbove=Math.max(4,forecastY-forecastHeight-10);
+  const forecastBelow=Math.max(4,Math.min(forecastStageRect.height-forecastHeight-4,forecastY+12));
+  const depositLeft=parseFloat(value.style.left)||0;
+  const depositTop=parseFloat(value.style.top)||0;
+  const depositWidth=value.getBoundingClientRect().width;
+  const depositHeight=value.getBoundingClientRect().height;
+  const overlapsDeposit=(left,top)=>left<depositLeft+depositWidth+10&&left+forecastWidth+10>depositLeft&&top<depositTop+depositHeight+8&&top+forecastHeight+8>depositTop;
+  const candidates=[
+    [forecastLeft,forecastAbove],
+    [forecastLeft,forecastBelow],
+    [Math.max(4,forecastLeft-forecastWidth*.7),forecastAbove],
+    [Math.max(4,forecastLeft-forecastWidth*.7),forecastBelow],
+    [Math.min(forecastStageRect.width-forecastWidth-4,forecastLeft+forecastWidth*.7),forecastAbove],
+    [Math.min(forecastStageRect.width-forecastWidth-4,forecastLeft+forecastWidth*.7),forecastBelow]
+  ];
+  const forecastPosition=candidates.find(([left,top])=>!overlapsDeposit(left,top))||[forecastLeft,forecastBelow];
+  forecastValue.style.left=forecastPosition[0]+'px';
+  forecastValue.style.top=forecastPosition[1]+'px';
   value.textContent=String.fromCharCode(36)+point.balance;
   const activeCurve=curvePath(points,0,balanceIndex);
   document.getElementById('activeLine').setAttribute('d',activeCurve);
