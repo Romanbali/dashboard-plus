@@ -233,7 +233,7 @@ depositInput.addEventListener('keydown',event=>{
 });
 const amounts=[15,15,15,15,-105,30,30,30,30,-93,30,-109,30,30,30,30,-95,15,15,15,15,15,15,15,15,15,15,15,15,15];
 try{
-  const dataVersion='november-2016-daily-amounts-v2';
+  const dataVersion='november-2026-daily-amounts-v3';
   const savedVersion=localStorage.getItem('dashboardPlusDailyAmountsVersion');
   if(savedVersion!==dataVersion){
     localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));
