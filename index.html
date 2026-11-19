@@ -397,14 +397,16 @@ function selectCalendarDate(i){
     rangeStartIndex=i;
     rangeEndIndex=i;
     rangeMode=false;
-  }else if(i!==rangeStartIndex){
+  }else if(i>rangeStartIndex){
+    // A range is created only when the second date is later than the first.
     rangeEndIndex=i;
-    if(rangeStartIndex>rangeEndIndex){
-      const swap=rangeStartIndex;
-      rangeStartIndex=rangeEndIndex;
-      rangeEndIndex=swap;
-    }
     rangeMode=true;
+  }else if(i<rangeStartIndex){
+    // Choosing an earlier date replaces the single selection; it does not
+    // create a backwards range.
+    rangeStartIndex=i;
+    rangeEndIndex=i;
+    rangeMode=false;
   }
   choose(i);
   syncEditorDateFields();
