@@ -124,6 +124,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .habit-card.mode-active{border-color:rgba(255,215,140,.85);box-shadow:0 0 16px rgba(255,194,91,.22),inset 0 0 14px rgba(255,220,160,.12)}
 .day .amount.habit-day-marker{font-size:clamp(13px,3vw,22px);font-weight:600;letter-spacing:0;line-height:1;color:rgba(228,240,255,.45);text-shadow:none;margin-top:-7px}
 .day .amount.habit-day-marker.habit-day-done{color:#ffe1a6;text-shadow:0 0 9px rgba(255,194,91,.45)}
+
+.selection-actions{position:absolute;left:50%;top:34.2%;transform:translateX(-50%);display:none;align-items:center;gap:10px;z-index:5}
+.stage.selection-actions-visible .selection-actions{display:flex}
+.selection-action{min-height:42px;padding:0 19px;border-radius:999px;border:1px solid rgba(220,237,255,.28);font-family:inherit;font-size:clamp(13px,3.4vw,16px);font-weight:550;color:#f5fbff;white-space:nowrap;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 7px 20px rgba(0,20,80,.2)}
+.selection-action.cancel{background:rgba(180,205,240,.16)}
+.selection-action.confirm{border-color:rgba(82,228,255,.55);background:linear-gradient(110deg,rgba(13,190,230,.48),rgba(47,111,255,.62));box-shadow:0 0 15px rgba(25,196,255,.18),inset 0 1px 0 rgba(255,255,255,.22)}
+.selection-action:active{transform:scale(.97)}
+.stage.date-selection-active .edit-selection-button{display:none}
+
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -152,6 +161,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
   <div class="forecast-value" id="forecastValue" aria-label="Projected month-end balance">≈ $0</div>
   <div class="days-window" id="daysWindow" aria-label="Scroll dates horizontally">
     <div class="days" id="days"></div>
+  </div>
+  <div class="selection-actions" id="selectionActions" aria-label="Действия с выбранными датами">
+    <button type="button" class="selection-action cancel" id="cancelDateSelection">Отмена</button>
+    <button type="button" class="selection-action confirm" id="confirmDateSelection">Сохранить</button>
   </div>
   <button class="edit-selection-button" id="editSelectionButton" type="button">
     <span class="edit-selection-icon" aria-hidden="true">✎</span>
@@ -867,19 +880,33 @@ window.addEventListener('resize',()=>choose(selectedDay));
 
 // Outside the date strip, leave date-editing mode and return to today's date.
 // Taps on the chart, balance pill, date cards or edit button keep their own behavior.
-document.querySelector('.stage').addEventListener('click',event=>{
-  if(event.target.closest('.days-window, #editSelectionButton, .habits')) return;
+const stageRoot=document.querySelector('.stage');
+const selectionActions=document.getElementById('selectionActions');
+function hideSelectionActions(){stageRoot.classList.remove('selection-actions-visible');}
+function cancelCalendarSelection(){
+  hideSelectionActions();
+  dateSelectionActive=false;
+  stageRoot.classList.remove('date-selection-active');
+  rangeStartIndex=null;rangeEndIndex=null;rangeMode=false;
+  hasUserDateSelection=false;dateSelectionCleared=false;
+  renderDateSelection();
+  syncEditorDateFields();
+  scrollCalendarToToday(true);
+}
+document.getElementById('cancelDateSelection').addEventListener('click',event=>{
+  event.stopPropagation();cancelCalendarSelection();
+});
+document.getElementById('confirmDateSelection').addEventListener('click',event=>{
+  event.stopPropagation();hideSelectionActions();
+  openDepositEditor(true);
+});
+stageRoot.addEventListener('click',event=>{
+  if(event.target.closest('.days-window, #editSelectionButton, .habits, .selection-actions')) return;
   if(depositBackdrop.classList.contains('open')) return;
-  const stage=document.querySelector('.stage');
-  if(stage.classList.contains('date-selection-active')){
-    dateSelectionActive=false;
-    stage.classList.remove('date-selection-active');
-    rangeStartIndex=null;
-    rangeEndIndex=null;
-    rangeMode=false;
-    hasUserDateSelection=false;
-    dateSelectionCleared=false;
-    renderDateSelection();
+  if(stageRoot.classList.contains('date-selection-active')){
+    selectionActions.classList.remove('hidden');
+    stageRoot.classList.add('selection-actions-visible');
+    return;
   }
   if(event.target.closest('.chart, #value')) return;
   scrollCalendarToToday(true);
