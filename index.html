@@ -249,11 +249,8 @@ document.getElementById('addTransaction').addEventListener('click',()=>{
   const amount=Math.round(Number(amountInput.value)*100)/100;
   if(!Number.isFinite(amount)||amount<=0){amountInput.focus();return;}
   const type=document.getElementById('transactionType').value;
-  const signed=type==='deposit'?amount:-amount;
   const day=Math.max(0,Math.min(amounts.length-1,selectedDay));
-  amounts[day]=Math.round((amounts[day]+signed)*100)/100;
   monthTransactions.push({day,type,amount});
-  saveMonthData();
   saveMonthTransactions();
   choose(day);
   amountInput.value='';
@@ -459,10 +456,16 @@ try{
   }
 }catch(error){}
 
+function transactionNetForDay(day){
+  return monthTransactions.reduce((sum,t)=>sum+(t.day===day?(t.type==='deposit'?t.amount:-t.amount):0),0);
+}
+function transactionNetThroughDay(day){
+  return monthTransactions.reduce((sum,t)=>sum+(t.day<=day?(t.type==='deposit'?t.amount:-t.amount):0),0);
+}
 function chartPoints(){
   const balances=[startingDeposit];
   amounts.forEach((change,index)=>{
-    const nextBalance=balances[index]+change;
+    const nextBalance=balances[index]+change+transactionNetForDay(index);
     balances.push(Math.round(nextBalance*100)/100);
   });
   const min=Math.min(...balances);
