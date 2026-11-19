@@ -200,6 +200,7 @@ document.getElementById('cancelDeposit').addEventListener('click',closeDepositEd
 depositBackdrop.addEventListener('click',event=>{if(event.target===depositBackdrop)closeDepositEditor();});
 document.getElementById('saveDeposit').addEventListener('click',()=>{
   if(dateSelectionActive){
+    if(periodAmountInput.value.trim()===''){periodAmountInput.focus();return;}
     const targetPeriodTotal=Number(periodAmountInput.value);
     if(!Number.isFinite(targetPeriodTotal)){periodAmountInput.focus();return;}
     if(rangeStartIndex===null||rangeEndIndex===null){periodAmountInput.focus();return;}
@@ -398,7 +399,7 @@ function syncEditorDateFields(){
   const last=rangeEndIndex===null?null:Math.max(rangeStartIndex,rangeEndIndex);
   rangeStartDateInput.value=first===null?'':String(first+1);
   rangeEndDateInput.value=last===null?'':String(last+1);
-  periodAmountInput.value=String(periodTotal());
+  periodAmountInput.value='';
 }
 function selectCalendarDate(i){
   if(!hasUserDateSelection){
@@ -501,7 +502,7 @@ clearDateSelectionButton.addEventListener('click',()=>{
   renderDateSelection();
   rangeStartDateInput.value='';
   rangeEndDateInput.value='';
-  periodAmountInput.value='0';
+  periodAmountInput.value='';
   selectedDay=todayIndex;
   choose(todayIndex);
   document.getElementById('depositTitle').textContent='Edit balance';
@@ -515,7 +516,7 @@ function updateSelectionFromEditor(){
   const endValue=rangeEndDateInput.value===''?null:Number(rangeEndDateInput.value);
   if(startValue===null&&endValue===null){
     rangeStartIndex=null;rangeEndIndex=null;rangeMode=false;hasUserDateSelection=false;
-    renderDateSelection();periodAmountInput.value='0';return;
+    renderDateSelection();periodAmountInput.value='';return;
   }
   const effectiveStart=startValue===null?endValue:startValue;
   const effectiveEnd=endValue===null?effectiveStart:endValue;
@@ -527,7 +528,7 @@ function updateSelectionFromEditor(){
   hasUserDateSelection=true;
   selectedDay=rangeEndIndex;
   choose(selectedDay);
-  periodAmountInput.value=String(periodTotal());
+  periodAmountInput.value='';
   const points=chartPoints();
   depositInput.value=String(points[selectedDay+1].balance);
   document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+startValue+'–'+endValue+' November 2026':'Edit balance · '+endValue+' November 2026';
