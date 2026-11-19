@@ -14,7 +14,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#022b80}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#f4f7ff;overflow-x:hidden}
-.stage{width:min(100vw,1024px);aspect-ratio:2/3;position:relative;margin:0 auto;overflow:hidden;background:linear-gradient(180deg,#022b80 0%,#03358f 34%,#0347ad 67%,#086cfa 100%)}
+.stage{touch-action:pan-y;width:min(100vw,1024px);aspect-ratio:2/3;position:relative;margin:0 auto;overflow:hidden;background:linear-gradient(180deg,#022b80 0%,#03358f 34%,#0347ad 67%,#086cfa 100%)}
 .stage:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 85% 45% at 50% 31%,rgba(0,85,210,.24),transparent 76%),radial-gradient(ellipse 90% 52% at 52% 100%,rgba(0,119,255,.26),transparent 80%);pointer-events:none}
 .month{position:absolute;top:0.55%;left:0;width:100%;text-align:center;font-size:clamp(22px,6.25vw,64px);font-weight:300;letter-spacing:.01em;line-height:1.2;white-space:nowrap;color:#f5f5fc}
 .chart{position:absolute;left:2.7%;top:12.65%;width:94.6%;height:15.5%;overflow:visible}
@@ -551,8 +551,7 @@ function changeMonth(offset){
   document.getElementById('monthTitle').textContent=monthLabel();
   buildMonthDays();
   syncEditorDateFields();
-  daysWindow.scrollTo({left:0,behavior:'auto'});
-  choose(selectedDay);
+  scrollCalendarToToday(false);
 }
 document.getElementById('previousMonth').addEventListener('click',()=>changeMonth(-1));
 document.getElementById('nextMonth').addEventListener('click',()=>changeMonth(1));
