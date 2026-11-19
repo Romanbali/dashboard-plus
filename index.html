@@ -205,6 +205,7 @@ let rangeStartIndex=todayIndex;
 let rangeEndIndex=todayIndex;
 let rangeMode=false;
 let hasUserDateSelection=false;
+let dateSelectionCleared=false;
 const weekdays=['Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
 
 amounts.forEach((amount,index)=>{
@@ -286,7 +287,10 @@ function renderDateSelection(){
   [...days.children].forEach((el,n)=>{
     el.classList.toggle('dim',n>todayIndex);
     el.classList.remove('selected','range-start','range-end','in-range');
-    if(!hasUserDateSelection) return;
+    if(!hasUserDateSelection){
+      if(!dateSelectionCleared) el.classList.toggle('selected',n===todayIndex);
+      return;
+    }
     if(!rangeMode){
       el.classList.toggle('selected',n===rangeStartIndex);
       return;
@@ -315,6 +319,7 @@ function selectCalendarDate(i){
     rangeEndIndex=i;
     rangeMode=false;
     hasUserDateSelection=true;
+    dateSelectionCleared=false;
   }else if(rangeMode){
     rangeStartIndex=i;
     rangeEndIndex=i;
@@ -385,6 +390,7 @@ clearDateSelectionButton.addEventListener('click',()=>{
   rangeEndIndex=null;
   rangeMode=false;
   hasUserDateSelection=false;
+  dateSelectionCleared=true;
   renderDateSelection();
   rangeStartDateInput.value='';
   rangeEndDateInput.value='';
@@ -401,10 +407,12 @@ function updateSelectionFromEditor(){
     rangeStartIndex=null;rangeEndIndex=null;rangeMode=false;hasUserDateSelection=false;
     renderDateSelection();periodAmountInput.value='0';return;
   }
-  if(startValue===null||endValue===null) return;
-  if(!Number.isInteger(startValue)||!Number.isInteger(endValue)||startValue<1||startValue>30||endValue<1||endValue>30) return;
-  rangeStartIndex=startValue-1;
-  rangeEndIndex=endValue-1;
+  const effectiveStart=startValue===null?endValue:startValue;
+  const effectiveEnd=endValue===null?effectiveStart:endValue;
+  if(!Number.isInteger(effectiveStart)||!Number.isInteger(effectiveEnd)||effectiveStart<1||effectiveStart>30||effectiveEnd<1||effectiveEnd>30) return;
+  rangeStartIndex=effectiveStart-1;
+  rangeEndIndex=effectiveEnd-1;
+  dateSelectionCleared=false;
   rangeMode=rangeStartIndex!==rangeEndIndex;
   hasUserDateSelection=true;
   selectedDay=rangeEndIndex;
