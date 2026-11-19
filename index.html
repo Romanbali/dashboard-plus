@@ -138,8 +138,15 @@ depositInput.addEventListener('keydown',event=>{
 });
 const amounts=[15,15,15,15,-105,30,30,30,30,-93,30,-109,30,30,30,30,-95,15,15,15,15,15,15,15,15,15,15,15,15,15];
 try{
-  const savedAmounts=JSON.parse(localStorage.getItem('dashboardPlusDailyAmounts')||'null');
-  if(Array.isArray(savedAmounts)&&savedAmounts.length===30&&savedAmounts.every(n=>Number.isFinite(n))) amounts.splice(0,amounts.length,...savedAmounts);
+  const dataVersion='november-2016-daily-amounts-v1';
+  const savedVersion=localStorage.getItem('dashboardPlusDailyAmountsVersion');
+  if(savedVersion!==dataVersion){
+    localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));
+    localStorage.setItem('dashboardPlusDailyAmountsVersion',dataVersion);
+  }else{
+    const savedAmounts=JSON.parse(localStorage.getItem('dashboardPlusDailyAmounts')||'null');
+    if(Array.isArray(savedAmounts)&&savedAmounts.length===30&&savedAmounts.every(n=>Number.isFinite(n))) amounts.splice(0,amounts.length,...savedAmounts);
+  }
 }catch(error){}
 const todayDate=new Date().getDate();
 const todayIndex=Math.min(Math.max(todayDate,1),amounts.length)-1;
