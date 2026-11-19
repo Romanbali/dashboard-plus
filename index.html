@@ -157,8 +157,8 @@ function openDepositEditor(showDateSelection=false){
   dateSelectionActive=showDateSelection;
   document.querySelector('.deposit-dialog').classList.toggle('date-selection-active',showDateSelection);
   const date=selectedDay+1;
-  const start=rangeStartIndex===null?date:rangeStartIndex+1;
-  const end=rangeEndIndex===null?date:rangeEndIndex+1;
+  const start=rangeStartIndex===null?date:Math.min(rangeStartIndex,rangeEndIndex)+1;
+  const end=rangeEndIndex===null?date:Math.max(rangeStartIndex,rangeEndIndex)+1;
   document.getElementById('depositTitle').textContent=showDateSelection?(rangeMode?'Edit period · '+start+'–'+end+' November':'Edit date · '+date+' November'):'Edit deposit · '+date+' November';
   document.getElementById('depositDescription').textContent=showDateSelection?(rangeMode?'Enter the daily amount to apply separately to every date in the selected period. The chart and balances will update.':'Enter the amount to apply to this date. The chart and balances will update.'):'Set the balance for this date. Previous and following balances will recalculate automatically.';
   syncEditorDateFields();
@@ -377,8 +377,10 @@ function periodTotal(){
   return amounts.slice(low,high+1).reduce((sum,amount)=>sum+amount,0);
 }
 function syncEditorDateFields(){
-  rangeStartDateInput.value=rangeStartIndex===null?'':String(rangeStartIndex+1);
-  rangeEndDateInput.value=rangeEndIndex===null?'':String(rangeEndIndex+1);
+  const first=rangeStartIndex===null?null:Math.min(rangeStartIndex,rangeEndIndex);
+  const last=rangeEndIndex===null?null:Math.max(rangeStartIndex,rangeEndIndex);
+  rangeStartDateInput.value=first===null?'':String(first+1);
+  rangeEndDateInput.value=last===null?'':String(last+1);
   periodAmountInput.value=String(periodTotal());
 }
 function selectCalendarDate(i){
@@ -394,6 +396,11 @@ function selectCalendarDate(i){
     rangeMode=false;
   }else if(i!==rangeStartIndex){
     rangeEndIndex=i;
+    if(rangeStartIndex>rangeEndIndex){
+      const swap=rangeStartIndex;
+      rangeStartIndex=rangeEndIndex;
+      rangeEndIndex=swap;
+    }
     rangeMode=true;
   }
   choose(i);
@@ -494,8 +501,8 @@ function updateSelectionFromEditor(){
   const effectiveStart=startValue===null?endValue:startValue;
   const effectiveEnd=endValue===null?effectiveStart:endValue;
   if(!Number.isInteger(effectiveStart)||!Number.isInteger(effectiveEnd)||effectiveStart<1||effectiveStart>30||effectiveEnd<1||effectiveEnd>30) return;
-  rangeStartIndex=effectiveStart-1;
-  rangeEndIndex=effectiveEnd-1;
+  rangeStartIndex=Math.min(effectiveStart,effectiveEnd)-1;
+  rangeEndIndex=Math.max(effectiveStart,effectiveEnd)-1;
   dateSelectionCleared=false;
   rangeMode=rangeStartIndex!==rangeEndIndex;
   hasUserDateSelection=true;
