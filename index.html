@@ -28,16 +28,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .pill{position:absolute;left:51.85%;top:9.22%;width:15.15%;height:3.15%;min-height:22px;border-radius:7px;background:rgba(184,210,247,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:clamp(13px,3.15vw,32px);font-weight:400;color:#fff;letter-spacing:.01em;z-index:2}
 .pill{border:0;cursor:pointer;font-family:inherit;padding:0}
 .pill:active{filter:brightness(1.12)}
-.deposit-backdrop{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,13,49,.62);backdrop-filter:blur(8px);overflow-y:auto;overscroll-behavior:contain}
+.deposit-backdrop{position:fixed;left:0;right:0;top:var(--visible-top,0px);height:var(--visible-height,100dvh);bottom:auto;z-index:20;display:none;align-items:center;justify-content:center;padding:12px 16px;background:rgba(0,13,49,.62);backdrop-filter:blur(8px);overflow:hidden;overscroll-behavior:contain}
 .deposit-backdrop.open{display:flex}
-.deposit-dialog{width:min(100%,360px);max-height:calc(var(--visible-height, 100dvh) - 32px);overflow-y:auto;overscroll-behavior:contain;padding:24px;border:1px solid rgba(210,230,255,.2);border-radius:22px;background:linear-gradient(155deg,#174d9d,#07327e);box-shadow:0 18px 60px rgba(0,0,0,.38);color:#f5f8ff;flex:0 0 auto}
+.deposit-dialog{width:min(100%,360px);max-height:calc(var(--visible-height, 100dvh) - 24px);overflow-y:auto;overscroll-behavior:contain;padding:24px 24px 0;border:1px solid rgba(210,230,255,.2);border-radius:22px;background:linear-gradient(155deg,#174d9d,#07327e);box-shadow:0 18px 60px rgba(0,0,0,.38);color:#f5f8ff;flex:0 0 auto;scrollbar-width:none}
 @supports not (height:100dvh){.deposit-dialog{max-height:calc(var(--visible-height, 100vh) - 32px)}}
 .deposit-dialog h2{margin:0 0 7px;font-size:21px;font-weight:500}
 .deposit-dialog p{margin:0 0 18px;color:rgba(235,244,255,.72);font-size:14px;line-height:1.4}
 .deposit-dialog label{display:block;margin-bottom:7px;font-size:13px;color:rgba(235,244,255,.82)}
 .deposit-dialog input{width:100%;height:52px;padding:0 14px;border:1px solid rgba(220,237,255,.28);border-radius:12px;outline:none;background:rgba(255,255,255,.12);color:#fff;font-family:inherit;font-size:22px;font-weight:500}
 .deposit-dialog input:focus{border-color:#59eaff;box-shadow:0 0 0 3px rgba(40,220,255,.14)}
-.deposit-actions{display:flex;gap:10px;margin-top:18px}
+.deposit-actions{position:sticky;bottom:0;display:flex;gap:10px;margin:18px -24px 0;padding:12px 24px 24px;background:linear-gradient(180deg,rgba(12,57,133,.9),#123f8d 30%);}
 .deposit-actions button{flex:1;min-height:44px;border:1px solid rgba(230,240,255,.2);border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:15px;font-weight:500}
 .deposit-actions .save{border:0;background:linear-gradient(100deg,#13c9ed,#397aff);color:#fff}
 .days-window{position:absolute;left:7.32%;top:24.8%;width:89.36%;height:8.25%;overflow-x:auto;overflow-y:visible;scrollbar-width:none;touch-action:pan-x;overscroll-behavior-x:contain}
@@ -98,8 +98,11 @@ const depositBackdrop=document.getElementById('depositBackdrop');
 const depositInput=document.getElementById('depositInput');
 
 function updateVisibleViewport(){
-  const height=window.visualViewport?window.visualViewport.height:window.innerHeight;
+  const viewport=window.visualViewport;
+  const height=viewport?viewport.height:window.innerHeight;
+  const top=viewport?viewport.offsetTop:0;
   document.documentElement.style.setProperty('--visible-height',height+'px');
+  document.documentElement.style.setProperty('--visible-top',top+'px');
 }
 updateVisibleViewport();
 if(window.visualViewport){
@@ -123,9 +126,12 @@ function openDepositEditor(){
   updateVisibleViewport();
   depositInput.focus();
   requestAnimationFrame(()=>{
+    updateVisibleViewport();
     const dialog=document.querySelector('.deposit-dialog');
     if(dialog) dialog.scrollTop=0;
   });
+  setTimeout(()=>updateVisibleViewport(),250);
+  setTimeout(()=>updateVisibleViewport(),500);
 }
 function closeDepositEditor(){
   depositBackdrop.classList.remove('open');
