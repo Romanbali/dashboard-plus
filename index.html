@@ -252,11 +252,10 @@ document.getElementById('addTransaction').addEventListener('click',()=>{
   const day=Math.max(0,Math.min(amounts.length-1,selectedDay));
   monthTransactions.push({day,type,amount});
   saveMonthTransactions();
-  choose(day);
   amountInput.value='';
-  const balance=chartPoints()[day+1].balance;
-  depositInput.value=String(balance);
-  document.getElementById('transactionHint').textContent=(type==='deposit'?'Top up':'Withdrawal')+' added to day '+(day+1)+'. A '+(type==='deposit'?'green +':'orange −')+' marker is shown on the chart.';
+  closeDepositEditor();
+  choose(day);
+  document.getElementById('transactionHint').textContent=(type==='deposit'?'Top up':'Withdrawal')+' saved for day '+(day+1)+'. The daily amount was not changed.';
 });
 
 document.getElementById('saveDeposit').addEventListener('click',()=>{
