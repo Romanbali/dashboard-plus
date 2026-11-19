@@ -9,7 +9,7 @@
 <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
 <meta name="theme-color" content="#022b80">
-<title>November 2016</title>
+<title>November 2026</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#022b80}
@@ -79,7 +79,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 </head>
 <body translate="no" class="notranslate">
 <main class="stage" aria-label="Monthly earnings dashboard">
-  <h1 class="month" id="monthTitle">November 2016</h1>
+  <h1 class="month" id="monthTitle">November 2026</h1>
   <div class="chart">
     <svg viewBox="0 0 960 240" preserveAspectRatio="none" role="img" aria-label="Smooth monthly earnings curve">
       <defs>
@@ -159,7 +159,7 @@ function openDepositEditor(showDateSelection=false){
   const date=selectedDay+1;
   const start=rangeStartIndex===null?date:Math.min(rangeStartIndex,rangeEndIndex)+1;
   const end=rangeEndIndex===null?date:Math.max(rangeStartIndex,rangeEndIndex)+1;
-  document.getElementById('depositTitle').textContent=showDateSelection?(rangeMode?'Edit period · '+start+'–'+end+' November':'Edit date · '+date+' November'):'Edit deposit · '+date+' November';
+  document.getElementById('depositTitle').textContent=showDateSelection?(rangeMode?'Edit period · '+start+'–'+end+' November 2026':'Edit date · '+date+' November 2026'):'Edit deposit · '+date+' November 2026';
   document.getElementById('depositDescription').textContent=showDateSelection?(rangeMode?'Enter the daily amount to apply separately to every date in the selected period. The chart and balances will update.':'Enter the amount to apply to this date. The chart and balances will update.'):'Set the balance for this date. Previous and following balances will recalculate automatically.';
   syncEditorDateFields();
   const points=chartPoints();
@@ -238,7 +238,7 @@ let rangeMode=false;
 let hasUserDateSelection=false;
 let dateSelectionCleared=false;
 let dateSelectionActive=false;
-const weekdays=['Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
+const weekdays=Array.from({length:7},(_,i)=>new Intl.DateTimeFormat('en-US',{weekday:'short'}).format(new Date(2026,10,i+1)));
 
 amounts.forEach((amount,index)=>{
   const date=index+1;
@@ -410,7 +410,7 @@ function selectCalendarDate(i){
     const points=chartPoints();
     depositInput.value=String(points[selectedDay+1].balance);
     const start=rangeStartIndex+1,end=rangeEndIndex+1;
-    document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+start+'–'+end+' November':'Edit balance · '+(selectedDay+1)+' November';
+    document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+start+'–'+end+' November 2026':'Edit balance · '+(selectedDay+1)+' November 2026';
   }
 }
 function choose(i){
@@ -511,7 +511,7 @@ function updateSelectionFromEditor(){
   periodAmountInput.value=String(periodTotal());
   const points=chartPoints();
   depositInput.value=String(points[selectedDay+1].balance);
-  document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+startValue+'–'+endValue+' November':'Edit balance · '+endValue+' November';
+  document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+startValue+'–'+endValue+' November 2026':'Edit balance · '+endValue+' November 2026';
 }
 syncEditorDateFields();
 window.addEventListener('resize',()=>choose(selectedDay));
