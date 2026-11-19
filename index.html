@@ -278,7 +278,8 @@ document.getElementById('saveDeposit').addEventListener('click',()=>{
   if(!Number.isFinite(targetBalance)){depositInput.focus();return;}
   const exactBalance=Math.round(targetBalance*100)/100;
   const cumulativeChange=amounts.slice(0,selectedDay+1).reduce((sum,amount)=>sum+amount,0);
-  startingDeposit=Math.round((exactBalance-cumulativeChange)*100)/100;
+  const cumulativeTransactions=transactionNetThroughDay(selectedDay);
+  startingDeposit=Math.round((exactBalance-cumulativeChange-cumulativeTransactions)*100)/100;
   balanceOverrides=Array(amounts.length).fill(null);
   try{
     saveMonthData();
@@ -367,7 +368,13 @@ function monthOpeningBalance(year,month){
   const previousMonth=new Date(year,month-1,1);
   const previousOpening=monthOpeningBalance(previousMonth.getFullYear(),previousMonth.getMonth());
   const previousAmounts=storedMonthAmounts(previousMonth.getFullYear(),previousMonth.getMonth());
-  return Math.round((previousOpening+previousAmounts.reduce((sum,amount)=>sum+amount,0))*100)/100;
+  let previousTransactions=[];
+  try{
+    const raw=JSON.parse(localStorage.getItem(monthKey(previousMonth.getFullYear(),previousMonth.getMonth())+'-transactions')||'[]');
+    if(Array.isArray(raw))previousTransactions=raw;
+  }catch(error){}
+  const transactionNet=previousTransactions.reduce((sum,t)=>sum+(t&&Number.isFinite(t.amount)&&t.amount>0?(t.type==='deposit'?t.amount:t.type==='withdrawal'?-t.amount:0):0),0);
+  return Math.round((previousOpening+previousAmounts.reduce((sum,amount)=>sum+amount,0)+transactionNet)*100)/100;
 }
 loadMonthData();
 loadMonthTransactions();
