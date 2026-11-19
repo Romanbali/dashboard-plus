@@ -248,6 +248,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .habit-card .habit-icon path[fill="#f4f8ff"],.habit-card .habit-icon rect[fill="#f4f8ff"]{fill:#171717}
 .habit-card .habit-icon path[stroke="#f4f8ff"]{stroke:#171717}
 
+
+/* Color accents over the light brushed-metal interface */
+.stage{background:linear-gradient(145deg,#fbfcff 0%,#f1f3f7 52%,#e6e9ef 100%) !important}
+.stage:before{background:radial-gradient(ellipse 78% 42% at 50% 25%,rgba(75,142,255,.12),transparent 75%),radial-gradient(ellipse 75% 48% at 52% 85%,rgba(45,190,150,.09),transparent 78%) !important}
+.month-arrow:active{background:linear-gradient(145deg,#dceaff,#c4d9ff);border-color:#7da8ed;color:#174b91}
+.chart .glow{stroke:#6b9cff;opacity:.32}
+.chart .line{stroke:#2675e8;filter:url(#lineGlow);stroke-width:4.2}
+.chart .future{stroke:#4b82ce;stroke-width:2.5;stroke-dasharray:1 7}
+.marker,.marker-halo{fill:#2878e8}
+.marker-halo{opacity:.22}
+.marker-line{stroke:#76a4e9}
+.forecast-marker{fill:#4386e9;stroke:#fff;stroke-width:1.5}
+.negative-point-halo{fill:#ff8a52;opacity:.25}
+.negative-point{fill:#f07836;stroke:#fff;stroke-width:1}
+.forecast-value{color:#4975b5}
+.pill{background:linear-gradient(145deg,#e8f1ff,#d5e5ff);border:1px solid #b7cef2;color:#1e4d8b;box-shadow:0 2px 8px rgba(48,103,190,.12),inset 0 1px 0 #fff}
+.day.selected{border:2px solid #347de2;box-shadow:0 0 0 1px rgba(52,125,226,.12),0 4px 14px rgba(52,125,226,.22),inset 0 0 0 1px #fff}
+.day.selected .date{color:#1759b5}
+.day .amount.negative,.day.selected .amount.negative{color:#d96835;text-shadow:none}
+.stage.date-selection-active .days .day.in-range,.stage.date-selection-active .days .day.range-start,.stage.date-selection-active .days .day.range-end{background:linear-gradient(145deg,#fff0e6,#ffe0d1) !important;border-color:#ee986c !important;box-shadow:inset 0 0 0 1px #fff,0 2px 8px rgba(224,112,58,.14) !important}
+.deposit-dialog input:focus{border-color:#4387e8;box-shadow:0 0 0 3px rgba(67,135,232,.13)}
+.deposit-actions .save{border:1px solid #2869c7;background:linear-gradient(110deg,#347fe6,#245fba);color:#fff}
+.edit-selection-button{border-color:#9ebce8;background:linear-gradient(120deg,rgba(229,241,255,.98),rgba(207,226,255,.96));box-shadow:0 4px 14px rgba(44,102,188,.14),inset 0 1px 0 #fff;color:#174b91}
+.edit-selection-icon{background:#347fe6;color:#fff}
+.selection-action.confirm{border-color:#2869c7;background:linear-gradient(110deg,#347fe6,#245fba);color:#fff;box-shadow:0 4px 12px rgba(42,104,193,.2)}
+.habit-card.done,.habit-card.mode-active{border-color:#75b9a1;background:linear-gradient(145deg,#f3fff9,#e0f5eb);box-shadow:0 0 0 1px rgba(48,157,111,.05),0 4px 14px rgba(42,145,104,.12),inset 0 0 0 1px #fff}
+.habit-card.done .habit-toggle{background:linear-gradient(145deg,#27ad79,#16875c);color:#fff;box-shadow:0 2px 7px rgba(28,139,93,.22)}
+.habit-card.mode-active:not(.done){border-color:#e4a16e;background:linear-gradient(145deg,#fffaf4,#fff0e2)}
+.habit-card.mode-active:not(.done) .habit-toggle{background:linear-gradient(145deg,#f5b16f,#e58b42);color:#fff}
+.habit-card:first-child .habit-icon{color:#bd6b36}
+.habit-card:nth-child(2) .habit-icon{color:#347fc5}
+.habit-day-marker.habit-day-done{color:#18875d;text-shadow:0 0 8px rgba(24,135,93,.2)}
+
 </style>
 </head>
 <body translate="no" class="notranslate">
