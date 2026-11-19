@@ -39,6 +39,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .deposit-dialog input:focus{border-color:#59eaff;box-shadow:0 0 0 3px rgba(40,220,255,.14)}
 .selection-editor{display:none;margin:0 0 18px;padding:13px;border:1px solid rgba(210,230,255,.15);border-radius:14px;background:rgba(255,255,255,.055)}
 .deposit-dialog.date-selection-active .selection-editor{display:block}
+.deposit-dialog.date-selection-active>label[for="depositInput"],
+.deposit-dialog.date-selection-active>#depositInput{display:none}
+.deposit-dialog.date-selection-active .selection-editor>label[for="periodAmount"]{display:block}
+
 .selection-date-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .selection-date-fields input{height:42px;font-size:17px}
 .selection-editor>label{margin-top:10px}
@@ -110,7 +114,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
         <div><label for="rangeEndDate">End date</label><input id="rangeEndDate" type="number" inputmode="numeric" min="1" max="30" placeholder="Day"></div>
       </div>
       <label for="periodAmount">Calculated amount for period ($)</label>
-      <input id="periodAmount" type="text" readonly value="0">
+      <input id="periodAmount" type="number" inputmode="decimal" step="0.01" autocomplete="off" value="0">
       <button type="button" class="selection-clear" id="clearDateSelection">Clear selection</button>
     </div>
     <label for="depositInput">Balance on selected day ($)</label>
@@ -162,7 +166,7 @@ function openDepositEditor(showDateSelection=false){
   depositBackdrop.classList.add('open');
   depositBackdrop.setAttribute('aria-hidden','false');
   updateVisibleViewport();
-  depositInput.focus();
+  (showDateSelection?periodAmountInput:depositInput).focus();
   requestAnimationFrame(()=>{
     updateVisibleViewport();
     const dialog=document.querySelector('.deposit-dialog');
@@ -180,6 +184,26 @@ document.getElementById('editSelectionButton').addEventListener('click',()=>open
 document.getElementById('cancelDeposit').addEventListener('click',closeDepositEditor);
 depositBackdrop.addEventListener('click',event=>{if(event.target===depositBackdrop)closeDepositEditor();});
 document.getElementById('saveDeposit').addEventListener('click',()=>{
+  if(dateSelectionActive){
+    const targetPeriodTotal=Number(periodAmountInput.value);
+    if(!Number.isFinite(targetPeriodTotal)){periodAmountInput.focus();return;}
+    if(rangeStartIndex===null||rangeEndIndex===null){periodAmountInput.focus();return;}
+    const low=Math.min(rangeStartIndex,rangeEndIndex);
+    const high=Math.max(rangeStartIndex,rangeEndIndex);
+    const count=high-low+1;
+    const totalCents=Math.round(targetPeriodTotal*100);
+    const baseCents=Math.trunc(totalCents/count);
+    let remainder=totalCents-baseCents*count;
+    for(let i=low;i<=high;i++){
+      const extra=remainder>0?1:remainder<0?-1:0;
+      amounts[i]=(baseCents+extra)/100;
+      remainder-=extra;
+    }
+    try{localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));}catch(error){}
+    closeDepositEditor();
+    choose(selectedDay);
+    return;
+  }
   const targetBalance=Number(depositInput.value);
   if(!Number.isFinite(targetBalance)){depositInput.focus();return;}
   const exactBalance=Math.round(targetBalance*100)/100;
