@@ -51,6 +51,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .deposit-actions{position:sticky;bottom:0;display:flex;gap:10px;margin:18px -24px 0;padding:12px 24px 24px;background:linear-gradient(180deg,rgba(12,57,133,.9),#123f8d 30%);}
 .deposit-actions button{flex:1;min-height:44px;border:1px solid rgba(230,240,255,.2);border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:15px;font-weight:500}
 .deposit-actions .save{border:0;background:linear-gradient(100deg,#13c9ed,#397aff);color:#fff}
+.edit-selection-button{position:absolute;left:50%;top:34.2%;transform:translateX(-50%) translateY(-6px);display:none;align-items:center;gap:10px;min-height:44px;padding:0 17px;border:1px solid rgba(117,238,255,.55);border-radius:999px;background:linear-gradient(115deg,rgba(13,190,230,.27),rgba(47,111,255,.42));box-shadow:0 0 18px rgba(25,196,255,.2),inset 0 1px 0 rgba(255,255,255,.22),0 8px 24px rgba(0,20,80,.2);backdrop-filter:blur(12px);color:#f5fbff;font:500 clamp(13px,3.4vw,16px)/1 inherit;letter-spacing:.01em;white-space:nowrap;cursor:pointer;transition:opacity .2s,transform .2s}
+.stage.date-selection-active .edit-selection-button{display:flex;transform:translateX(-50%) translateY(0)}
+.edit-selection-icon{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:rgba(111,235,255,.17);color:#a9f5ff;font-size:17px}
+.edit-selection-arrow{margin-left:2px;color:rgba(205,245,255,.8);font-size:15px}
+.edit-selection-button:active{transform:translateX(-50%) scale(.97)}
 .days-window{position:absolute;left:7.32%;top:24.8%;width:89.36%;height:8.25%;overflow-x:auto;overflow-y:visible;scrollbar-width:none;touch-action:pan-x;overscroll-behavior-x:contain}
 .days-window::-webkit-scrollbar{display:none}
 .days{height:100%;display:flex;gap:calc(min(100vw,1024px)*.0127);width:max-content;min-width:100%;padding:0 0 3px}
@@ -89,6 +94,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
   <div class="days-window" id="daysWindow" aria-label="Scroll dates horizontally">
     <div class="days" id="days"></div>
   </div>
+  <button class="edit-selection-button" id="editSelectionButton" type="button">
+    <span class="edit-selection-icon" aria-hidden="true">✎</span>
+    <span>Редактировать</span>
+    <span class="edit-selection-arrow" aria-hidden="true">↗</span>
+  </button>
 </main>
 <div class="deposit-backdrop" id="depositBackdrop" aria-hidden="true">
   <section class="deposit-dialog" role="dialog" aria-modal="true" aria-labelledby="depositTitle">
@@ -139,7 +149,8 @@ try{
   const savedStart=localStorage.getItem('dashboardPlusStartingDeposit');
   if(savedStart!==null&&Number.isFinite(Number(savedStart))) startingDeposit=Number(savedStart);
 }catch(error){}
-function openDepositEditor(){
+function openDepositEditor(showDateSelection=false){
+  document.querySelector('.deposit-dialog').classList.toggle('date-selection-active',showDateSelection);
   const date=selectedDay+1;
   const start=rangeStartIndex===null?date:rangeStartIndex+1;
   const end=rangeEndIndex===null?date:rangeEndIndex+1;
@@ -164,7 +175,8 @@ function closeDepositEditor(){
   depositBackdrop.classList.remove('open');
   depositBackdrop.setAttribute('aria-hidden','true');
 }
-value.addEventListener('click',openDepositEditor);
+value.addEventListener('click',()=>openDepositEditor(false));
+document.getElementById('editSelectionButton').addEventListener('click',()=>openDepositEditor(true));
 document.getElementById('cancelDeposit').addEventListener('click',closeDepositEditor);
 depositBackdrop.addEventListener('click',event=>{if(event.target===depositBackdrop)closeDepositEditor();});
 document.getElementById('saveDeposit').addEventListener('click',()=>{
@@ -246,7 +258,7 @@ amounts.forEach((amount,index)=>{
       selectedDay=index;
       choose(index);
       syncEditorDateFields();
-      document.querySelector('.deposit-dialog').classList.add('date-selection-active');
+      document.querySelector('.stage').classList.add('date-selection-active');
     },550);
   });
   const cancelLongPress=()=>{clearTimeout(longPressTimer);longPressTimer=null;};
@@ -368,6 +380,7 @@ function selectCalendarDate(i){
   }
   choose(i);
   syncEditorDateFields();
+  document.querySelector('.stage').classList.add('date-selection-active');
   if(depositBackdrop.classList.contains('open')){
     const points=chartPoints();
     depositInput.value=String(points[selectedDay+1].balance);
@@ -425,6 +438,7 @@ rangeStartDateInput.addEventListener('input',updateSelectionFromEditor);
 rangeEndDateInput.addEventListener('input',updateSelectionFromEditor);
 clearDateSelectionButton.addEventListener('click',()=>{
   dateSelectionActive=false;
+  document.querySelector('.stage').classList.remove('date-selection-active');
   document.querySelector('.deposit-dialog').classList.remove('date-selection-active');
   rangeStartIndex=null;
   rangeEndIndex=null;
@@ -442,6 +456,7 @@ clearDateSelectionButton.addEventListener('click',()=>{
 });
 function updateSelectionFromEditor(){
   dateSelectionActive=true;
+  document.querySelector('.stage').classList.add('date-selection-active');
   document.querySelector('.deposit-dialog').classList.add('date-selection-active');
   const startValue=rangeStartDateInput.value===''?null:Number(rangeStartDateInput.value);
   const endValue=rangeEndDateInput.value===''?null:Number(rangeEndDateInput.value);
@@ -470,7 +485,7 @@ window.addEventListener('resize',()=>choose(selectedDay));
 // Tapping the empty dashboard background returns the calendar to today.
 // Chart, balance pill and date cards keep their own interactions.
 document.querySelector('.stage').addEventListener('click',event=>{
-  if(event.target.closest('.chart, #value, .days-window')) return;
+  if(event.target.closest('.chart, #value, .days-window, #editSelectionButton')) return;
   scrollCalendarToToday(true);
 });
 </script>
