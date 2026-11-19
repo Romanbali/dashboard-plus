@@ -51,7 +51,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .deposit-actions{position:sticky;bottom:0;display:flex;gap:10px;margin:18px -24px 0;padding:12px 24px 24px;background:linear-gradient(180deg,rgba(12,57,133,.9),#123f8d 30%);}
 .deposit-actions button{flex:1;min-height:44px;border:1px solid rgba(230,240,255,.2);border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:15px;font-weight:500}
 .deposit-actions .save{border:0;background:linear-gradient(100deg,#13c9ed,#397aff);color:#fff}
-.edit-selection-button{position:absolute;left:50%;top:34.2%;transform:translateX(-50%) translateY(-6px);display:none;align-items:center;gap:10px;min-height:44px;padding:0 17px;border:1px solid rgba(117,238,255,.55);border-radius:999px;background:linear-gradient(115deg,rgba(13,190,230,.27),rgba(47,111,255,.42));box-shadow:0 0 18px rgba(25,196,255,.2),inset 0 1px 0 rgba(255,255,255,.22),0 8px 24px rgba(0,20,80,.2);backdrop-filter:blur(12px);color:#f5fbff;font:500 clamp(13px,3.4vw,16px)/1 inherit;letter-spacing:.01em;white-space:nowrap;cursor:pointer;transition:opacity .2s,transform .2s}
+.edit-selection-button{position:absolute;left:50%;top:34.2%;transform:translateX(-50%) translateY(-6px);display:none;align-items:center;gap:10px;min-height:44px;padding:0 17px;border:1px solid rgba(117,238,255,.55);border-radius:999px;background:linear-gradient(115deg,rgba(13,190,230,.27),rgba(47,111,255,.42));box-shadow:0 0 18px rgba(25,196,255,.2),inset 0 1px 0 rgba(255,255,255,.22),0 8px 24px rgba(0,20,80,.2);backdrop-filter:blur(12px);color:#f5fbff;font-family:inherit;font-size:clamp(13px,3.4vw,16px);font-weight:500;line-height:1;letter-spacing:.01em;white-space:nowrap;cursor:pointer;transition:opacity .2s,transform .2s}
 .stage.date-selection-active .edit-selection-button{display:flex;transform:translateX(-50%) translateY(0)}
 .edit-selection-icon{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:rgba(111,235,255,.17);color:#a9f5ff;font-size:17px}
 .edit-selection-arrow{margin-left:2px;color:rgba(205,245,255,.8);font-size:15px}
@@ -154,8 +154,8 @@ function openDepositEditor(showDateSelection=false){
   const date=selectedDay+1;
   const start=rangeStartIndex===null?date:rangeStartIndex+1;
   const end=rangeEndIndex===null?date:rangeEndIndex+1;
-  document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+start+'–'+end+' November':'Edit balance · '+date+' November';
-  document.getElementById('depositDescription').textContent=rangeMode?'The selected date range and its calculated earnings are synchronized below. You can adjust either date.':'The selected date is synchronized below. You can adjust the date or select a range.';
+  document.getElementById('depositTitle').textContent=showDateSelection?(rangeMode?'Edit period · '+start+'–'+end+' November':'Edit date · '+date+' November'):'Edit deposit · '+date+' November';
+  document.getElementById('depositDescription').textContent=showDateSelection?(rangeMode?'The selected date range and its calculated earnings are synchronized below. You can adjust either date.':'The selected date is synchronized below. You can adjust the date or select a range.'):'Set the balance for this date. Previous and following balances will recalculate automatically.';
   syncEditorDateFields();
   const points=chartPoints();
   depositInput.value=String(points[selectedDay+1].balance);
