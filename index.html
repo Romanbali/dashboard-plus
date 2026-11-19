@@ -516,10 +516,23 @@ function updateSelectionFromEditor(){
 syncEditorDateFields();
 window.addEventListener('resize',()=>choose(selectedDay));
 
-// Tapping the empty dashboard background returns the calendar to today.
-// Chart, balance pill and date cards keep their own interactions.
+// Outside the date strip, leave date-editing mode and return to today's date.
+// Taps on the chart, balance pill, date cards or edit button keep their own behavior.
 document.querySelector('.stage').addEventListener('click',event=>{
-  if(event.target.closest('.chart, #value, .days-window, #editSelectionButton')) return;
+  if(event.target.closest('.days-window, #editSelectionButton')) return;
+  if(depositBackdrop.classList.contains('open')) return;
+  const stage=document.querySelector('.stage');
+  if(stage.classList.contains('date-selection-active')){
+    dateSelectionActive=false;
+    stage.classList.remove('date-selection-active');
+    rangeStartIndex=null;
+    rangeEndIndex=null;
+    rangeMode=false;
+    hasUserDateSelection=false;
+    dateSelectionCleared=false;
+    renderDateSelection();
+  }
+  if(event.target.closest('.chart, #value')) return;
   scrollCalendarToToday(true);
 });
 </script>
