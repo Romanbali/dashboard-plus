@@ -23,6 +23,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .line{fill:none;stroke:#21eaff;stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round;filter:url(#lineGlow)}
 .future{fill:none;stroke:rgba(244,248,255,.94);stroke-width:3;stroke-linecap:round;stroke-dasharray:.1 7.2}
 .forecast-marker{fill:rgba(244,248,255,.72);stroke:rgba(244,248,255,.24);stroke-width:1.5}
+.negative-point-halo{fill:#ff78c6;opacity:.3;filter:url(#negativePointBlur)}
+.negative-point{fill:#ff9bd3;opacity:.95;filter:url(#negativePointGlow)}
+
 .forecast-value{position:absolute;left:76%;top:10%;width:auto;height:auto;min-height:0;padding:0 2px;border-radius:0;background:transparent;border:0;display:flex;align-items:center;justify-content:center;font-size:clamp(10px,2.5vw,25px);font-weight:400;color:rgba(239,246,255,.72);letter-spacing:.01em;z-index:3;box-shadow:none;white-space:nowrap;pointer-events:none}
 .marker-line{stroke:rgba(242,247,255,.78);stroke-width:1.5}
 .marker-halo{fill:#fff;opacity:.42;filter:url(#blur)}
@@ -112,7 +115,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
     <svg viewBox="0 0 960 240" preserveAspectRatio="none" role="img" aria-label="Smooth monthly earnings curve">
       <defs>
         <filter id="blur" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
-        <filter id="lineGlow" x="-40%" y="-100%" width="180%" height="300%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="lineGlow" x="-40%" y="-100%" width="180%" height="300%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="negativePointBlur" x="-300%" y="-300%" width="700%" height="700%"><feGaussianBlur stdDeviation="5"/></filter><filter id="negativePointGlow" x="-250%" y="-250%" width="600%" height="600%"><feGaussianBlur stdDeviation="1.5"/></filter>
       </defs>
       <path class="glow" d="M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22"/>
       <path class="line" id="activeLine" d="M0 146 C55 110 68 70 150 70 C230 70 255 150 335 157 C415 165 430 105 500 94 C550 86 570 107 610 95 C675 78 710 38 788 22"/>
@@ -120,7 +123,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
       
       <circle class="marker-halo" cx="580" cy="30" r="19"/>
       <circle class="marker" cx="580" cy="30" r="8.5"/>
-      <circle class="forecast-marker" id="forecastMarker" cx="940" cy="87" r="5"/>
+      <g id="negativePoints" aria-hidden="true"></g><circle class="forecast-marker" id="forecastMarker" cx="940" cy="87" r="5"/>
     </svg>
   </div>
   <button class="pill" id="value" type="button" aria-label="Edit starting deposit" title="Edit starting deposit">$123</button>
@@ -523,6 +526,11 @@ function choose(i){
     label.textContent=(amount<0?'-':'')+String.fromCharCode(36)+String(Math.abs(amount));
   });
   const points=chartPoints();
+  const negativePoints=document.getElementById('negativePoints');
+  negativePoints.innerHTML=amounts.map((amount,index)=>amount<0?
+    '<circle class="negative-point-halo" cx="'+points[index+1].x+'" cy="'+points[index+1].y+'" r="5.5"/>'+
+    '<circle class="negative-point" cx="'+points[index+1].x+'" cy="'+points[index+1].y+'" r="2.1"/>':''
+  ).join('');
   const balanceIndex=i+1;
   const point=points[balanceIndex];
   // A quiet forecast stays pinned to the final calendar day, independent of selection.
