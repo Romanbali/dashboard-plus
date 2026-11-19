@@ -263,20 +263,20 @@ function loadMonthData(){
   const key=monthKey();
   try{
     const stored=localStorage.getItem(key);
-    if(stored){
+    const hasUserEdits=localStorage.getItem(key+'-edited')==='1';
+    if(stored&&hasUserEdits){
       const parsed=JSON.parse(stored);
-      if(Array.isArray(parsed)&&parsed.length===count&&parsed.every(n=>Number.isFinite(n))) amounts=parsed;
-      else amounts=Array(count).fill(15);
+      amounts=Array.isArray(parsed)&&parsed.length===count&&parsed.every(n=>Number.isFinite(n))?parsed:Array(count).fill(0);
     }else if(viewYear===2026&&viewMonth===10){
       const legacy=JSON.parse(localStorage.getItem('dashboardPlusDailyAmounts')||'null');
       amounts=Array.isArray(legacy)&&legacy.length===count&&legacy.every(n=>Number.isFinite(n))?legacy:novemberSeed.slice(0,count);
-    }else amounts=Array(count).fill(15);
-  }catch(error){amounts=(viewYear===2026&&viewMonth===10?novemberSeed.slice(0,count):Array(count).fill(15));}
+    }else amounts=Array(count).fill(0);
+  }catch(error){amounts=(viewYear===2026&&viewMonth===10?novemberSeed.slice(0,count):Array(count).fill(0));}
   todayDate=isCurrentViewMonth()?new Date().getDate():(new Date(viewYear,viewMonth,1)<new Date(new Date().getFullYear(),new Date().getMonth(),1)?count:1);
   todayIndex=Math.max(0,Math.min(count-1,todayDate-1));
   try{localStorage.setItem(key,JSON.stringify(amounts));}catch(error){}
 }
-function saveMonthData(){try{localStorage.setItem(monthKey(),JSON.stringify(amounts));}catch(error){}}
+function saveMonthData(){try{localStorage.setItem(monthKey(),JSON.stringify(amounts));localStorage.setItem(monthKey()+'-edited','1');}catch(error){}}
 loadMonthData();
 let selectedDay=todayIndex;
 let rangeStartIndex=todayIndex;
