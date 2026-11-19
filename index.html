@@ -102,6 +102,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .month-arrow:disabled{opacity:.22;cursor:default;pointer-events:none;box-shadow:none}
 #previousMonth{left:4%}#nextMonth{right:4%}
 @media(min-width:700px){#previousMonth{left:12%}#nextMonth{right:12%}}
+
+/* Daily habit cards */
+.habits{position:absolute;left:2.8%;top:42.7%;width:94.4%;display:grid;grid-template-columns:1fr 1fr;gap:2.2%;z-index:2}
+.habit-card{min-width:0;height:10.7%;min-height:0;aspect-ratio:1.95/1;padding:3.2% 4.2% 2.5%;border:1px solid rgba(211,231,255,.25);border-radius:calc(min(100vw,1024px)*.026);background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.045));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 7px 20px rgba(0,18,68,.12);color:#f5f8ff;font-family:inherit;text-align:left;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);transition:border-color .18s,background .18s,box-shadow .18s}
+.habit-main{display:flex;align-items:center;min-width:0;gap:3.5%}
+.habit-icon{flex:0 0 19%;width:19%;height:auto;max-height:clamp(28px,7.5vw,72px);object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+.habit-copy{min-width:0;flex:1}
+.habit-name{font-size:clamp(12px,3.2vw,28px);font-weight:650;line-height:1.05;letter-spacing:.005em;white-space:nowrap}
+.habit-subtitle{margin-top:4px;font-size:clamp(8px,1.8vw,15px);line-height:1.1;color:rgba(239,246,255,.86);white-space:nowrap}
+.habit-toggle{flex:0 0 clamp(28px,9.6vw,66px);width:clamp(28px,9.6vw,66px);height:clamp(28px,5.2vw,42px);border-radius:999px;background:rgba(188,218,255,.19);display:grid;place-items:center;color:rgba(242,248,255,.9);font-size:clamp(17px,4vw,30px);font-weight:500;line-height:1}
+.habit-stats{display:flex;align-items:center;justify-content:space-between;gap:5px;padding-top:5%;border-top:1px solid rgba(220,237,255,.14);font-size:clamp(7px,1.65vw,14px);font-weight:550;color:rgba(237,245,255,.88);white-space:nowrap}
+.habit-stat{display:flex;align-items:center;gap:4px;min-width:0}
+.habit-stat-icon{font-size:1.12em;opacity:.9}
+.habit-card.done{border-color:rgba(119,238,255,.65);background:linear-gradient(145deg,rgba(50,193,235,.2),rgba(255,255,255,.065));box-shadow:0 0 13px rgba(55,210,255,.13),inset 0 0 14px rgba(74,220,255,.08)}
+.habit-card.done .habit-toggle{background:rgba(86,220,255,.28);color:#d9fbff;box-shadow:0 0 12px rgba(62,219,255,.22)}
+.habit-card:active{filter:brightness(1.15);transform:scale(.99)}
+@media(max-width:380px){.habits{gap:1.8%}.habit-card{padding-left:3%;padding-right:3%}.habit-name{font-size:clamp(11px,3vw,15px)}.habit-subtitle{font-size:clamp(7px,1.7vw,9px)}.habit-stats{font-size:clamp(6px,1.55vw,8px)}}
+
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -137,6 +155,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
     <span class="edit-selection-arrow" aria-hidden="true">↗</span>
   </button>
 </main>
+<section class="habits" aria-label="Ежедневные привычки">
+  <button class="habit-card" id="coffeeHabit" type="button" aria-pressed="false">
+    <span class="habit-main">
+      <span class="habit-icon" aria-hidden="true" style="font-size:clamp(27px,6.7vw,58px);line-height:1">🥤</span>
+      <span class="habit-copy"><span class="habit-name">КОФЕ</span><span class="habit-subtitle">Maximum 1 cup per day</span></span>
+      <span class="habit-toggle" aria-hidden="true">◉</span>
+    </span>
+    <span class="habit-stats"><span class="habit-stat"><span class="habit-stat-icon">▢</span><span data-streak="coffee">0 дней подряд</span></span><span class="habit-stat"><span class="habit-stat-icon">🏆</span><span data-record="coffee">Рекорд 0 дней</span></span></span>
+  </button>
+  <button class="habit-card" id="pushupHabit" type="button" aria-pressed="false">
+    <span class="habit-main">
+      <svg class="habit-icon" viewBox="0 0 72 48" aria-hidden="true"><path d="M5 27l13-5 13-2 8-7 8-2 4 4-7 7 11 2 10-7 5 3-8 13-17 1-10-5-14 7-13-2z" fill="#f4f8ff"/><path d="M18 22l-7 11M50 12l8-7" stroke="#f4f8ff" stroke-width="4" stroke-linecap="round"/><circle cx="65" cy="7" r="4" fill="#f4f8ff"/></svg>
+      <span class="habit-copy"><span class="habit-name">ОТЖИМАНИЕ</span><span class="habit-subtitle">Каждый день</span></span>
+      <span class="habit-toggle" aria-hidden="true">✓</span>
+    </span>
+    <span class="habit-stats"><span class="habit-stat"><span class="habit-stat-icon">▢</span><span data-streak="pushup">0 дней подряд</span></span><span class="habit-stat"><span class="habit-stat-icon">🏆</span><span data-record="pushup">Рекорд 0 дней</span></span></span>
+  </button>
+</section>
 <div class="deposit-backdrop" id="depositBackdrop" aria-hidden="true">
   <section class="deposit-dialog" role="dialog" aria-modal="true" aria-labelledby="depositTitle">
     <h2 id="depositTitle">Edit balance</h2>
@@ -159,6 +195,53 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
   </section>
 </div>
 <script>
+
+const habitStoreKey='dashboardPlusHabits';
+let habitData={};
+try{habitData=JSON.parse(localStorage.getItem(habitStoreKey)||'{}')||{};}catch(error){habitData={};}
+const habitIds=['coffee','pushup'];
+const habitDateKey=(date)=>date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+function habitStats(id){
+  const today=new Date();
+  const todayKey=habitDateKey(today);
+  let streak=0;
+  const cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+  while(habitData[habitDateKey(cursor)]&&habitData[habitDateKey(cursor)][id]){
+    streak++;
+    cursor.setDate(cursor.getDate()-1);
+  }
+  let best=0,run=0,previous=null;
+  const dates=Object.keys(habitData).filter(key=>habitData[key]&&habitData[key][id]).sort();
+  for(const key of dates){
+    const d=new Date(key+'T12:00:00');
+    if(previous){const diff=Math.round((d-previous)/86400000);run=diff===1?run+1:1;}else run=1;
+    best=Math.max(best,run);previous=d;
+  }
+  return {done:!!(habitData[todayKey]&&habitData[todayKey][id]),streak,best};
+}
+function renderHabits(){
+  const todayKey=habitDateKey(new Date());
+  habitIds.forEach(id=>{
+    const button=document.getElementById(id==='coffee'?'coffeeHabit':'pushupHabit');
+    const stats=habitStats(id);
+    button.classList.toggle('done',stats.done);
+    button.setAttribute('aria-pressed',String(stats.done));
+    button.querySelector('.habit-toggle').textContent=stats.done?'✓':(id==='coffee'?'◉':'✓');
+    button.querySelector('[data-streak="'+id+'"]').textContent=stats.streak+' дней подряд';
+    button.querySelector('[data-record="'+id+'"]').textContent='Рекорд '+stats.best+' дней';
+  });
+}
+habitIds.forEach(id=>{
+  document.getElementById(id==='coffee'?'coffeeHabit':'pushupHabit').addEventListener('click',()=>{
+    const key=habitDateKey(new Date());
+    if(!habitData[key])habitData[key]={};
+    habitData[key][id]=!habitData[key][id];
+    try{localStorage.setItem(habitStoreKey,JSON.stringify(habitData));}catch(error){}
+    renderHabits();
+  });
+});
+renderHabits();
+
 const days=document.getElementById('days');
 const value=document.getElementById('value');
 const depositBackdrop=document.getElementById('depositBackdrop');
