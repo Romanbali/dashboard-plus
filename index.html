@@ -121,6 +121,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .habit-card:active{filter:brightness(1.15);transform:scale(.99)}
 @media(max-width:380px){.habits{gap:1.8%}.habit-card{padding-left:3%;padding-right:3%}.habit-name{font-size:clamp(11px,3vw,15px)}.habit-subtitle{font-size:clamp(7px,1.7vw,9px)}.habit-stats{font-size:clamp(6px,1.45vw,8px)}}
 
+.habit-card.mode-active{border-color:rgba(255,215,140,.85);box-shadow:0 0 16px rgba(255,194,91,.22),inset 0 0 14px rgba(255,220,160,.12)}
+.day .amount.habit-day-marker{font-size:clamp(13px,3vw,22px);font-weight:600;letter-spacing:0;line-height:1;color:rgba(228,240,255,.45);text-shadow:none;margin-top:-7px}
+.day .amount.habit-day-marker.habit-day-done{color:#ffe1a6;text-shadow:0 0 9px rgba(255,194,91,.45)}
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -202,6 +205,7 @@ const habitStoreKey='dashboardPlusHabits';
 let habitData={};
 try{habitData=JSON.parse(localStorage.getItem(habitStoreKey)||'{}')||{};}catch(error){habitData={};}
 const habitIds=['coffee','pushup'];
+let activeHabitMode=null;
 const habitDateKey=(date)=>date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
 function habitStats(id){
   const today=new Date();
@@ -221,6 +225,36 @@ function habitStats(id){
   }
   return {done:!!(habitData[todayKey]&&habitData[todayKey][id]),streak,best};
 }
+function renderHabitCalendarMode(){
+  [...days.children].forEach((day,index)=>{
+    const label=day.querySelector('.amount');
+    if(!label)return;
+    if(activeHabitMode){
+      const key=habitDateKey(new Date(viewYear,viewMonth,index+1));
+      const done=!!(habitData[key]&&habitData[key][activeHabitMode]);
+      label.textContent=activeHabitMode==='coffee'?(done?'☕':'○'):(done?'✓':'○');
+      label.classList.toggle('habit-day-done',done);
+      label.classList.add('habit-day-marker');
+    }else{
+      label.classList.remove('habit-day-marker','habit-day-done');
+      const amount=amounts[index];
+      label.textContent=(amount<0?'-':'')+String.fromCharCode(36)+String(Math.abs(amount));
+    }
+  });
+  habitIds.forEach(id=>{
+    const button=document.getElementById(id==='coffee'?'coffeeHabit':'pushupHabit');
+    button.classList.toggle('mode-active',activeHabitMode===id);
+    button.setAttribute('aria-label',activeHabitMode===id?'Режим отметок включён. Нажмите и удерживайте, чтобы выйти':'Нажмите и удерживайте для отметок по дням');
+  });
+}
+function toggleHabitForDate(id,index){
+  const key=habitDateKey(new Date(viewYear,viewMonth,index+1));
+  if(!habitData[key])habitData[key]={};
+  habitData[key][id]=!habitData[key][id];
+  try{localStorage.setItem(habitStoreKey,JSON.stringify(habitData));}catch(error){}
+  renderHabits();
+  renderHabitCalendarMode();
+}
 function renderHabits(){
   const todayKey=habitDateKey(new Date());
   habitIds.forEach(id=>{
@@ -234,12 +268,29 @@ function renderHabits(){
   });
 }
 habitIds.forEach(id=>{
-  document.getElementById(id==='coffee'?'coffeeHabit':'pushupHabit').addEventListener('click',()=>{
-    const key=habitDateKey(new Date());
-    if(!habitData[key])habitData[key]={};
-    habitData[key][id]=!habitData[key][id];
-    try{localStorage.setItem(habitStoreKey,JSON.stringify(habitData));}catch(error){}
-    renderHabits();
+  const button=document.getElementById(id==='coffee'?'coffeeHabit':'pushupHabit');
+  let holdTimer=null,held=false;
+  button.addEventListener('pointerdown',event=>{
+    if(event.pointerType==='mouse'&&event.button!==0)return;
+    held=false;
+    clearTimeout(holdTimer);
+    holdTimer=setTimeout(()=>{
+      held=true;
+      activeHabitMode=activeHabitMode===id?null:id;
+      renderHabitCalendarMode();
+    },520);
+  });
+  const cancelHold=()=>{clearTimeout(holdTimer);holdTimer=null;};
+  button.addEventListener('pointerup',cancelHold);
+  button.addEventListener('pointercancel',cancelHold);
+  button.addEventListener('pointerleave',cancelHold);
+  button.addEventListener('contextmenu',event=>event.preventDefault());
+  button.addEventListener('click',event=>{
+    event.preventDefault();
+    event.stopPropagation();
+    if(held){held=false;return;}
+    if(activeHabitMode===id){activeHabitMode=null;renderHabitCalendarMode();return;}
+    toggleHabitForDate(id,todayIndex);
   });
 });
 renderHabits();
@@ -470,6 +521,7 @@ function buildMonthDays(){
   btn.addEventListener('contextmenu',event=>event.preventDefault());
   btn.addEventListener('click',()=>{
     if(longPressTriggered){longPressTriggered=false;return;}
+    if(activeHabitMode){toggleHabitForDate(activeHabitMode,index);return;}
     if(dateSelectionActive) selectCalendarDate(index);
     else choose(index);
   });
@@ -603,6 +655,7 @@ function choose(i){
   renderDateSelection();
   // Refresh each visible daily amount immediately after in-memory edits.
   [...days.children].forEach((day,index)=>{
+    if(activeHabitMode)return;
     const amount=amounts[index];
     const label=day.querySelector('.amount');
     if(!label) return;
@@ -814,7 +867,7 @@ window.addEventListener('resize',()=>choose(selectedDay));
 // Outside the date strip, leave date-editing mode and return to today's date.
 // Taps on the chart, balance pill, date cards or edit button keep their own behavior.
 document.querySelector('.stage').addEventListener('click',event=>{
-  if(event.target.closest('.days-window, #editSelectionButton')) return;
+  if(event.target.closest('.days-window, #editSelectionButton, .habits')) return;
   if(depositBackdrop.classList.contains('open')) return;
   const stage=document.querySelector('.stage');
   if(stage.classList.contains('date-selection-active')){
