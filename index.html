@@ -247,7 +247,6 @@ amounts.forEach((amount,index)=>{
       choose(index);
       syncEditorDateFields();
       document.querySelector('.deposit-dialog').classList.add('date-selection-active');
-      openDepositEditor();
     },550);
   });
   const cancelLongPress=()=>{clearTimeout(longPressTimer);longPressTimer=null;};
