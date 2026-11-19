@@ -250,8 +250,19 @@ function choose(i){
   marker.setAttribute('cy',point.y);
   halo.setAttribute('cx',point.x);
   halo.setAttribute('cy',point.y);
-  const pillX=Math.max(0,Math.min(790,point.x-75));
-  value.style.left=(pillX/960*94.6+2.7)+'%';
+  // Anchor the balance pill directly above the chart marker.
+  const stage=document.querySelector('.stage');
+  const chart=document.querySelector('.chart');
+  const stageRect=stage.getBoundingClientRect();
+  const chartRect=chart.getBoundingClientRect();
+  const markerX=chartRect.left-stageRect.left+(point.x/960)*chartRect.width;
+  const markerY=chartRect.top-stageRect.top+(point.y/240)*chartRect.height;
+  const pillWidth=value.getBoundingClientRect().width;
+  const pillHeight=value.getBoundingClientRect().height;
+  const pillLeft=Math.max(4,Math.min(stageRect.width-pillWidth-4,markerX-pillWidth/2));
+  const pillTop=Math.max(4,markerY-pillHeight-12);
+  value.style.left=pillLeft+'px';
+  value.style.top=pillTop+'px';
 }
 
 const daysWindow=document.getElementById('daysWindow');
@@ -262,6 +273,7 @@ const dayStride=firstDay.getBoundingClientRect().width+dayGap;
 // Keep today's card in the same near-right position as the original design.
 daysWindow.scrollLeft=Math.max(0,todayIndex-6)*dayStride;
 choose(todayIndex);
+window.addEventListener('resize',()=>choose(selectedDay));
 </script>
 </body>
 </html>
