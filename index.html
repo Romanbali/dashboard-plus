@@ -276,6 +276,7 @@ let habitData={};
 try{habitData=JSON.parse(localStorage.getItem(habitStoreKey)||'{}')||{};}catch(error){habitData={};}
 const habitIds=['coffee','pushup'];
 let activeHabitMode=null;
+let habitEditSnapshot=null;
 const habitDateKey=(date)=>date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
 function habitStats(id){
   const today=new Date();
@@ -346,7 +347,15 @@ habitIds.forEach(id=>{
     clearTimeout(holdTimer);
     holdTimer=setTimeout(()=>{
       held=true;
-      activeHabitMode=activeHabitMode===id?null:id;
+      if(activeHabitMode===id){
+        activeHabitMode=null;
+        habitEditSnapshot=null;
+        hideSelectionActions();
+      }else{
+        if(!activeHabitMode) habitEditSnapshot=JSON.parse(JSON.stringify(habitData));
+        activeHabitMode=id;
+        hideSelectionActions();
+      }
       renderHabitCalendarMode();
     },520);
   });
@@ -359,7 +368,7 @@ habitIds.forEach(id=>{
     event.preventDefault();
     event.stopPropagation();
     if(held){held=false;return;}
-    if(activeHabitMode===id){activeHabitMode=null;renderHabitCalendarMode();return;}
+    if(activeHabitMode===id){activeHabitMode=null;habitEditSnapshot=null;hideSelectionActions();renderHabitCalendarMode();return;}
     toggleHabitForDate(id,todayIndex);
   });
 });
@@ -949,6 +958,23 @@ window.addEventListener('resize',()=>choose(selectedDay));
 const stageRoot=document.querySelector('.stage');
 const selectionActions=document.getElementById('selectionActions');
 function hideSelectionActions(){stageRoot.classList.remove('selection-actions-visible');}
+function cancelHabitEditing(){
+  if(habitEditSnapshot) habitData=JSON.parse(JSON.stringify(habitEditSnapshot));
+  try{localStorage.setItem(habitStoreKey,JSON.stringify(habitData));}catch(error){}
+  habitEditSnapshot=null;
+  activeHabitMode=null;
+  hideSelectionActions();
+  renderHabits();
+  renderHabitCalendarMode();
+}
+function saveHabitEditing(){
+  try{localStorage.setItem(habitStoreKey,JSON.stringify(habitData));}catch(error){}
+  habitEditSnapshot=null;
+  activeHabitMode=null;
+  hideSelectionActions();
+  renderHabits();
+  renderHabitCalendarMode();
+}
 function cancelCalendarSelection(){
   hideSelectionActions();
   dateSelectionActive=false;
@@ -960,16 +986,20 @@ function cancelCalendarSelection(){
   scrollCalendarToToday(true);
 }
 document.getElementById('cancelDateSelection').addEventListener('click',event=>{
-  event.stopPropagation();cancelCalendarSelection();
+  event.stopPropagation();
+  if(activeHabitMode){cancelHabitEditing();return;}
+  cancelCalendarSelection();
 });
 document.getElementById('confirmDateSelection').addEventListener('click',event=>{
-  event.stopPropagation();hideSelectionActions();
+  event.stopPropagation();
+  if(activeHabitMode){saveHabitEditing();return;}
+  hideSelectionActions();
   openDepositEditor(true);
 });
 stageRoot.addEventListener('click',event=>{
   if(event.target.closest('.days-window, #editSelectionButton, .habits, .selection-actions')) return;
   if(depositBackdrop.classList.contains('open')) return;
-  if(stageRoot.classList.contains('date-selection-active')){
+  if(activeHabitMode||stageRoot.classList.contains('date-selection-active')){
     selectionActions.classList.remove('hidden');
     stageRoot.classList.add('selection-actions-visible');
     return;
