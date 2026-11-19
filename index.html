@@ -540,6 +540,27 @@ function choose(i){
   const pillTop=Math.max(4,markerY-pillHeight-12);
   value.style.left=pillLeft+'px';
   value.style.top=pillTop+'px';
+
+  // Reposition the forecast only after the deposit pill has its final
+  // coordinates for this render (the earlier layout pass can be stale).
+  const depositBox={left:pillLeft,top:pillTop,width:pillWidth,height:pillHeight};
+  const forecastBoxWidth=forecastValue.getBoundingClientRect().width;
+  const forecastBoxHeight=forecastValue.getBoundingClientRect().height;
+  const forecastCenterX=forecastX;
+  const forecastCandidates=[
+    [Math.max(4,Math.min(stageRect.width-forecastBoxWidth-4,forecastCenterX-forecastBoxWidth/2)),Math.min(stageRect.height-forecastBoxHeight-4,forecastY+14)],
+    [Math.max(4,Math.min(stageRect.width-forecastBoxWidth-4,forecastCenterX-forecastBoxWidth/2)),Math.max(4,forecastY-forecastBoxHeight-14)],
+    [Math.max(4,Math.min(stageRect.width-forecastBoxWidth-4,depositBox.left-forecastBoxWidth-12)),Math.max(4,Math.min(stageRect.height-forecastBoxHeight-4,forecastY-forecastBoxHeight/2))],
+    [Math.max(4,Math.min(stageRect.width-forecastBoxWidth-4,depositBox.left+depositBox.width+12)),Math.max(4,Math.min(stageRect.height-forecastBoxHeight-4,forecastY-forecastBoxHeight/2))]
+  ];
+  const forecastAvoidsDeposit=([left,top])=>
+    left+forecastBoxWidth+8<=depositBox.left ||
+    left>=depositBox.left+depositBox.width+8 ||
+    top+forecastBoxHeight+8<=depositBox.top ||
+    top>=depositBox.top+depositBox.height+8;
+  const finalForecastPosition=forecastCandidates.find(forecastAvoidsDeposit)||forecastCandidates[0];
+  forecastValue.style.left=finalForecastPosition[0]+'px';
+  forecastValue.style.top=finalForecastPosition[1]+'px';
 }
 
 const daysWindow=document.getElementById('daysWindow');
