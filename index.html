@@ -23,8 +23,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .line{fill:none;stroke:#21eaff;stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round;filter:url(#lineGlow)}
 .future{fill:none;stroke:rgba(244,248,255,.94);stroke-width:3;stroke-linecap:round;stroke-dasharray:.1 7.2}
 .forecast-marker{fill:rgba(244,248,255,.72);stroke:rgba(244,248,255,.24);stroke-width:1.5}
-.negative-point-halo{fill:#ff78c6;opacity:.3;filter:url(#negativePointBlur)}
-.negative-point{fill:#ff9bd3;opacity:.95;filter:url(#negativePointGlow)}
+.negative-segment-glow{fill:none;stroke:#ff5fbd;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;opacity:.48;filter:url(#negativePointBlur)}
+.negative-segment{fill:none;stroke:#ff8acb;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;opacity:.96}
+.negative-point-halo{fill:#ff78c6;opacity:.48;filter:url(#negativePointBlur)}
+.negative-point{fill:#ffd0e9;opacity:1;stroke:#ff70bd;stroke-width:1;filter:url(#negativePointGlow)}
 
 .forecast-value{position:absolute;left:76%;top:10%;width:auto;height:auto;min-height:0;padding:0 2px;border-radius:0;background:transparent;border:0;display:flex;align-items:center;justify-content:center;font-size:clamp(10px,2.5vw,25px);font-weight:400;color:rgba(239,246,255,.72);letter-spacing:.01em;z-index:3;box-shadow:none;white-space:nowrap;pointer-events:none}
 .marker-line{stroke:rgba(242,247,255,.78);stroke-width:1.5}
@@ -527,10 +529,15 @@ function choose(i){
   });
   const points=chartPoints();
   const negativePoints=document.getElementById('negativePoints');
-  negativePoints.innerHTML=amounts.map((amount,index)=>amount<0?
-    '<circle class="negative-point-halo" cx="'+points[index+1].x+'" cy="'+points[index+1].y+'" r="5.5"/>'+
-    '<circle class="negative-point" cx="'+points[index+1].x+'" cy="'+points[index+1].y+'" r="2.1"/>':''
-  ).join('');
+  negativePoints.innerHTML=amounts.map((amount,index)=>{
+    if(amount>=0) return '';
+    const segment=curvePath(points,index,index+1);
+    const end=points[index+1];
+    return '<path class="negative-segment-glow" d="'+segment+'"/>'+
+      '<path class="negative-segment" d="'+segment+'"/>'+
+      '<circle class="negative-point-halo" cx="'+end.x+'" cy="'+end.y+'" r="7.5"/>'+
+      '<circle class="negative-point" cx="'+end.x+'" cy="'+end.y+'" r="2.8"/>';
+  }).join('');
   const balanceIndex=i+1;
   const point=points[balanceIndex];
   // A quiet forecast stays pinned to the final calendar day, independent of selection.
