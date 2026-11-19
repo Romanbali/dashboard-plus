@@ -91,11 +91,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
   border:1.5px solid rgba(255,125,202,.98) !important;
   box-shadow:inset 0 0 13px rgba(255,125,202,.22),0 0 11px rgba(255,83,180,.42),0 0 20px rgba(255,83,180,.2) !important;
 }
+
+.month-navigation{position:absolute;top:.55%;left:0;width:100%;height:5.5%;display:flex;align-items:center;justify-content:center;z-index:4;pointer-events:none}
+.month-navigation .month{position:relative;top:auto;left:auto;width:auto;margin:0;pointer-events:none}
+.month-arrow{pointer-events:auto;position:absolute;top:50%;transform:translateY(-50%);width:clamp(34px,8vw,58px);height:clamp(34px,8vw,58px);border:1px solid rgba(205,229,255,.18);border-radius:50%;background:rgba(180,211,255,.09);color:rgba(239,248,255,.8);font:300 clamp(25px,6vw,42px)/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:grid;place-items:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.month-arrow:active{background:rgba(44,211,255,.2);border-color:rgba(60,224,255,.6);transform:translateY(-50%) scale(.94)}
+#previousMonth{left:4%}#nextMonth{right:4%}
+@media(min-width:700px){#previousMonth{left:12%}#nextMonth{right:12%}}
 </style>
 </head>
 <body translate="no" class="notranslate">
 <main class="stage" aria-label="Monthly earnings dashboard">
-  <h1 class="month" id="monthTitle">November 2026</h1>
+  <div class="month-navigation" aria-label="Month navigation">
+    <button class="month-arrow" id="previousMonth" type="button" aria-label="Previous month">‹</button>
+    <h1 class="month" id="monthTitle">November 2026</h1>
+    <button class="month-arrow" id="nextMonth" type="button" aria-label="Next month">›</button>
+  </div>
   <div class="chart">
     <svg viewBox="0 0 960 240" preserveAspectRatio="none" role="img" aria-label="Smooth monthly earnings curve">
       <defs>
@@ -212,7 +223,7 @@ document.getElementById('saveDeposit').addEventListener('click',()=>{
     const high=Math.max(rangeStartIndex,rangeEndIndex);
     const dailyAmount=Math.round(targetPeriodTotal*100)/100;
     for(let i=low;i<=high;i++) amounts[i]=dailyAmount;
-    try{localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));}catch(error){}
+    saveMonthData();
     closeDepositEditor();
     choose(selectedDay);
     return;
@@ -222,9 +233,9 @@ document.getElementById('saveDeposit').addEventListener('click',()=>{
   const exactBalance=Math.round(targetBalance*100)/100;
   const cumulativeChange=amounts.slice(0,selectedDay+1).reduce((sum,amount)=>sum+amount,0);
   startingDeposit=Math.round((exactBalance-cumulativeChange)*100)/100;
-  balanceOverrides=Array(30).fill(null);
+  balanceOverrides=Array(amounts.length).fill(null);
   try{
-    localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));
+    saveMonthData();
     localStorage.setItem('dashboardPlusStartingDeposit',String(startingDeposit));
     localStorage.removeItem('dashboardPlusBalanceOverrides');
   }catch(error){}
@@ -235,21 +246,36 @@ depositInput.addEventListener('keydown',event=>{
   if(event.key==='Enter')document.getElementById('saveDeposit').click();
   if(event.key==='Escape')closeDepositEditor();
 });
-const amounts=[15,15,15,15,-105,30,30,30,30,-93,30,-109,30,30,30,30,-95,15,15,15,15,15,15,15,15,15,15,15,15,15];
-try{
-  const dataVersion='november-2026-daily-amounts-v3';
-  const savedVersion=localStorage.getItem('dashboardPlusDailyAmountsVersion');
-  if(savedVersion!==dataVersion){
-    localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));
-    localStorage.setItem('dashboardPlusDailyAmountsVersion',dataVersion);
-    localStorage.removeItem('dashboardPlusBalanceOverrides');
-  }else{
-    const savedAmounts=JSON.parse(localStorage.getItem('dashboardPlusDailyAmounts')||'null');
-    if(Array.isArray(savedAmounts)&&savedAmounts.length===30&&savedAmounts.every(n=>Number.isFinite(n))) amounts.splice(0,amounts.length,...savedAmounts);
-  }
-}catch(error){}
-const todayDate=new Date().getDate();
-const todayIndex=Math.min(Math.max(todayDate,1),amounts.length)-1;
+let viewYear=2026;
+let viewMonth=10;
+const novemberSeed=[15,15,15,15,-105,30,30,30,30,-93,30,-109,30,30,30,30,-95,15,15,15,15,15,15,15,15,15,15,15,15,15];
+let amounts=[];
+let todayDate=new Date().getDate();
+let todayIndex=0;
+function monthKey(year=viewYear,month=viewMonth){return 'dashboardPlusDailyAmounts-'+year+'-'+String(month+1).padStart(2,'0');}
+function monthLabel(year=viewYear,month=viewMonth){return new Intl.DateTimeFormat('en-US',{month:'long',year:'numeric'}).format(new Date(year,month,1));}
+function daysInViewMonth(){return new Date(viewYear,viewMonth+1,0).getDate();}
+function isCurrentViewMonth(){const now=new Date();return now.getFullYear()===viewYear&&now.getMonth()===viewMonth;}
+function isFutureDate(index){const now=new Date();return new Date(viewYear,viewMonth,index+1)>new Date(now.getFullYear(),now.getMonth(),now.getDate());}
+function loadMonthData(){
+  const count=daysInViewMonth();
+  const key=monthKey();
+  try{
+    const stored=localStorage.getItem(key);
+    if(stored){
+      const parsed=JSON.parse(stored);
+      if(Array.isArray(parsed)&&parsed.length===count&&parsed.every(n=>Number.isFinite(n))) amounts=parsed;
+      else amounts=Array(count).fill(15);
+    }else if(viewYear===2026&&viewMonth===10){
+      amounts=novemberSeed.slice(0,count);
+    }else amounts=Array(count).fill(15);
+  }catch(error){amounts=(viewYear===2026&&viewMonth===10?novemberSeed.slice(0,count):Array(count).fill(15));}
+  todayDate=isCurrentViewMonth()?new Date().getDate():(new Date(viewYear,viewMonth,1)<new Date(new Date().getFullYear(),new Date().getMonth(),1)?count:1);
+  todayIndex=Math.max(0,Math.min(count-1,todayDate-1));
+  try{localStorage.setItem(key,JSON.stringify(amounts));}catch(error){}
+}
+function saveMonthData(){try{localStorage.setItem(monthKey(),JSON.stringify(amounts));}catch(error){}}
+loadMonthData();
 let selectedDay=todayIndex;
 let rangeStartIndex=todayIndex;
 let rangeEndIndex=todayIndex;
@@ -257,9 +283,9 @@ let rangeMode=false;
 let hasUserDateSelection=false;
 let dateSelectionCleared=false;
 let dateSelectionActive=false;
-const weekdays=Array.from({length:7},(_,i)=>new Intl.DateTimeFormat('en-US',{weekday:'short'}).format(new Date(2026,10,i+1)));
-
-amounts.forEach((amount,index)=>{
+function buildMonthDays(){
+  const weekdays=Array.from({length:7},(_,i)=>new Intl.DateTimeFormat('en-US',{weekday:'short'}).format(new Date(viewYear,viewMonth,i+1)));
+  amounts.forEach((amount,index)=>{
   const date=index+1;
   const btn=document.createElement('button');
   const weekday=document.createElement('span');
@@ -267,7 +293,7 @@ amounts.forEach((amount,index)=>{
   const amountLabel=document.createElement('span');
   const dollar=String.fromCharCode(36);
   btn.type='button';
-  btn.className='day'+(date>todayDate?' dim':'');
+  btn.className='day'+(isFutureDate(index)?' dim':'');
   weekday.className='weekday';
   weekday.textContent=weekdays[index%7];
   dateLabel.className='date';
@@ -315,12 +341,13 @@ amounts.forEach((amount,index)=>{
     else choose(index);
   });
   days.appendChild(btn);
-});
+  });
+}
 
-let balanceOverrides=Array(30).fill(null);
+let balanceOverrides=Array(amounts.length).fill(null);
 try{
   const savedOverrides=JSON.parse(localStorage.getItem('dashboardPlusBalanceOverrides')||'null');
-  if(Array.isArray(savedOverrides)&&savedOverrides.length===30){
+  if(Array.isArray(savedOverrides)&&savedOverrides.length===amounts.length){
     const anchorIndex=savedOverrides.reduce((last,value,index)=>value!==null?index:last,-1);
     if(anchorIndex>=0){
       const anchorBalance=Number(savedOverrides[anchorIndex]);
@@ -434,7 +461,7 @@ function selectCalendarDate(i){
     const points=chartPoints();
     depositInput.value=String(points[selectedDay+1].balance);
     const start=rangeStartIndex+1,end=rangeEndIndex+1;
-    document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+start+'–'+end+' November 2026':'Edit balance · '+(selectedDay+1)+' November 2026';
+    document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+start+'–'+end+' '+monthLabel():'Edit balance · '+(selectedDay+1)+' '+monthLabel();
   }
 }
 function choose(i){
@@ -509,6 +536,49 @@ function scrollCalendarToToday(smooth=true){
   choose(todayIndex);
 }
 scrollCalendarToToday(false);
+function changeMonth(offset){
+  if(depositBackdrop.classList.contains('open')) return;
+  viewMonth+=offset;
+  if(viewMonth<0){viewMonth=11;viewYear--;}
+  if(viewMonth>11){viewMonth=0;viewYear++;}
+  loadMonthData();
+  selectedDay=todayIndex;
+  rangeStartIndex=todayIndex;rangeEndIndex=todayIndex;
+  rangeMode=false;hasUserDateSelection=false;dateSelectionCleared=false;dateSelectionActive=false;
+  document.querySelector('.stage').classList.remove('date-selection-active');
+  days.innerHTML='';
+  document.getElementById('monthTitle').textContent=monthLabel();
+  buildMonthDays();
+  syncEditorDateFields();
+  daysWindow.scrollTo({left:0,behavior:'auto'});
+  choose(selectedDay);
+}
+document.getElementById('previousMonth').addEventListener('click',()=>changeMonth(-1));
+document.getElementById('nextMonth').addEventListener('click',()=>changeMonth(1));
+// Horizontal swipe anywhere on the dashboard (except the date strip) changes month.
+let monthSwipeStart=null;
+const stageForSwipe=document.querySelector('.stage');
+stageForSwipe.addEventListener('touchstart',event=>{
+  if(depositBackdrop.classList.contains('open')||event.target.closest('.days-window,.edit-selection-button,.month-arrow')){monthSwipeStart=null;return;}
+  const touch=event.changedTouches[0];monthSwipeStart={x:touch.clientX,y:touch.clientY};
+},{passive:true});
+stageForSwipe.addEventListener('touchend',event=>{
+  if(!monthSwipeStart)return;
+  const touch=event.changedTouches[0],dx=touch.clientX-monthSwipeStart.x,dy=touch.clientY-monthSwipeStart.y;
+  monthSwipeStart=null;
+  if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.25) changeMonth(dx>0?-1:1);
+},{passive:true});
+let mouseSwipeStart=null;
+stageForSwipe.addEventListener('pointerdown',event=>{
+  if(event.pointerType!=='mouse'||event.target.closest('.days-window,.edit-selection-button,.month-arrow'))return;
+  mouseSwipeStart={x:event.clientX,y:event.clientY};
+});
+stageForSwipe.addEventListener('pointerup',event=>{
+  if(!mouseSwipeStart)return;
+  const dx=event.clientX-mouseSwipeStart.x,dy=event.clientY-mouseSwipeStart.y;mouseSwipeStart=null;
+  if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25)changeMonth(dx>0?-1:1);
+});
+
 rangeStartDateInput.addEventListener('input',updateSelectionFromEditor);
 rangeEndDateInput.addEventListener('input',updateSelectionFromEditor);
 clearDateSelectionButton.addEventListener('click',()=>{
@@ -541,7 +611,7 @@ function updateSelectionFromEditor(){
   }
   const effectiveStart=startValue===null?endValue:startValue;
   const effectiveEnd=endValue===null?effectiveStart:endValue;
-  if(!Number.isInteger(effectiveStart)||!Number.isInteger(effectiveEnd)||effectiveStart<1||effectiveStart>30||effectiveEnd<1||effectiveEnd>30) return;
+  if(!Number.isInteger(effectiveStart)||!Number.isInteger(effectiveEnd)||effectiveStart<1||effectiveStart>daysInViewMonth()||effectiveEnd<1||effectiveEnd>daysInViewMonth()) return;
   rangeStartIndex=Math.min(effectiveStart,effectiveEnd)-1;
   rangeEndIndex=Math.max(effectiveStart,effectiveEnd)-1;
   dateSelectionCleared=false;
@@ -552,7 +622,7 @@ function updateSelectionFromEditor(){
   periodAmountInput.value='';
   const points=chartPoints();
   depositInput.value=String(points[selectedDay+1].balance);
-  document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+startValue+'–'+endValue+' November 2026':'Edit balance · '+endValue+' November 2026';
+  document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+startValue+'–'+endValue+' '+monthLabel():'Edit balance · '+endValue+' '+monthLabel();
 }
 syncEditorDateFields();
 window.addEventListener('resize',()=>choose(selectedDay));
