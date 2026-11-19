@@ -266,6 +266,9 @@ amounts.forEach((amount,index)=>{
     pointerStart={x:event.clientX,y:event.clientY};
     clearTimeout(longPressTimer);
     longPressTimer=setTimeout(()=>{
+      // Long press starts selection only once. While selecting, the next
+      // date (even an earlier one) must complete the range, not replace it.
+      if(dateSelectionActive) return;
       longPressTriggered=true;
       dateSelectionActive=true;
       rangeStartIndex=index;
