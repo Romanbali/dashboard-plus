@@ -154,6 +154,7 @@ try{
   if(savedStart!==null&&Number.isFinite(Number(savedStart))) startingDeposit=Number(savedStart);
 }catch(error){}
 function openDepositEditor(showDateSelection=false){
+  dateSelectionActive=showDateSelection;
   document.querySelector('.deposit-dialog').classList.toggle('date-selection-active',showDateSelection);
   const date=selectedDay+1;
   const start=rangeStartIndex===null?date:rangeStartIndex+1;
