@@ -37,7 +37,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .deposit-dialog label{display:block;margin-bottom:7px;font-size:13px;color:rgba(235,244,255,.82)}
 .deposit-dialog input{width:100%;height:52px;padding:0 14px;border:1px solid rgba(220,237,255,.28);border-radius:12px;outline:none;background:rgba(255,255,255,.12);color:#fff;font-family:inherit;font-size:22px;font-weight:500}
 .deposit-dialog input:focus{border-color:#59eaff;box-shadow:0 0 0 3px rgba(40,220,255,.14)}
-.selection-editor{margin:0 0 18px;padding:13px;border:1px solid rgba(210,230,255,.15);border-radius:14px;background:rgba(255,255,255,.055)}
+.selection-editor{display:none;margin:0 0 18px;padding:13px;border:1px solid rgba(210,230,255,.15);border-radius:14px;background:rgba(255,255,255,.055)}
+.deposit-dialog.date-selection-active .selection-editor{display:block}
 .selection-date-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .selection-date-fields input{height:42px;font-size:17px}
 .selection-editor>label{margin-top:10px}
@@ -206,6 +207,7 @@ let rangeEndIndex=todayIndex;
 let rangeMode=false;
 let hasUserDateSelection=false;
 let dateSelectionCleared=false;
+let dateSelectionActive=false;
 const weekdays=['Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
 
 amounts.forEach((amount,index)=>{
@@ -225,7 +227,42 @@ amounts.forEach((amount,index)=>{
   amountLabel.textContent=(amount<0?'-':'')+dollar+String(Math.abs(amount));
   btn.append(weekday,dateLabel,amountLabel);
   btn.setAttribute('aria-pressed',String(index===todayIndex));
-  btn.addEventListener('click',()=>selectCalendarDate(index));
+  let longPressTimer=null;
+  let longPressTriggered=false;
+  let pointerStart=null;
+  btn.addEventListener('pointerdown',event=>{
+    if(event.pointerType==='mouse'&&event.button!==0) return;
+    longPressTriggered=false;
+    pointerStart={x:event.clientX,y:event.clientY};
+    clearTimeout(longPressTimer);
+    longPressTimer=setTimeout(()=>{
+      longPressTriggered=true;
+      dateSelectionActive=true;
+      rangeStartIndex=index;
+      rangeEndIndex=index;
+      rangeMode=false;
+      hasUserDateSelection=true;
+      dateSelectionCleared=false;
+      selectedDay=index;
+      choose(index);
+      syncEditorDateFields();
+      document.querySelector('.deposit-dialog').classList.add('date-selection-active');
+      openDepositEditor();
+    },550);
+  });
+  const cancelLongPress=()=>{clearTimeout(longPressTimer);longPressTimer=null;};
+  btn.addEventListener('pointerup',cancelLongPress);
+  btn.addEventListener('pointercancel',cancelLongPress);
+  btn.addEventListener('pointerleave',cancelLongPress);
+  btn.addEventListener('pointermove',event=>{
+    if(pointerStart&&Math.hypot(event.clientX-pointerStart.x,event.clientY-pointerStart.y)>10) cancelLongPress();
+  });
+  btn.addEventListener('contextmenu',event=>event.preventDefault());
+  btn.addEventListener('click',()=>{
+    if(longPressTriggered){longPressTriggered=false;return;}
+    if(dateSelectionActive) selectCalendarDate(index);
+    else choose(index);
+  });
   days.appendChild(btn);
 });
 
@@ -388,6 +425,8 @@ scrollCalendarToToday(false);
 rangeStartDateInput.addEventListener('input',updateSelectionFromEditor);
 rangeEndDateInput.addEventListener('input',updateSelectionFromEditor);
 clearDateSelectionButton.addEventListener('click',()=>{
+  dateSelectionActive=false;
+  document.querySelector('.deposit-dialog').classList.remove('date-selection-active');
   rangeStartIndex=null;
   rangeEndIndex=null;
   rangeMode=false;
@@ -403,6 +442,8 @@ clearDateSelectionButton.addEventListener('click',()=>{
   document.getElementById('depositDescription').textContent='Date selection cleared. Select a date on the calendar or enter a day above.';
 });
 function updateSelectionFromEditor(){
+  dateSelectionActive=true;
+  document.querySelector('.deposit-dialog').classList.add('date-selection-active');
   const startValue=rangeStartDateInput.value===''?null:Number(rangeStartDateInput.value);
   const endValue=rangeEndDateInput.value===''?null:Number(rangeEndDateInput.value);
   if(startValue===null&&endValue===null){
