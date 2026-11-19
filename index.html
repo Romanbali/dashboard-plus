@@ -237,6 +237,7 @@ document.getElementById('saveDeposit').addEventListener('click',()=>{
   balanceOverrides=Array(amounts.length).fill(null);
   try{
     saveMonthData();
+    localStorage.setItem(monthKey()+'-openingOverride',String(startingDeposit));
     localStorage.setItem('dashboardPlusStartingDeposit',String(startingDeposit));
     localStorage.removeItem('dashboardPlusBalanceOverrides');
   }catch(error){}
@@ -277,7 +278,49 @@ function loadMonthData(){
   try{localStorage.setItem(key,JSON.stringify(amounts));}catch(error){}
 }
 function saveMonthData(){try{localStorage.setItem(monthKey(),JSON.stringify(amounts));localStorage.setItem(monthKey()+'-edited','1');}catch(error){}}
+function storedMonthAmounts(year,month){
+  const count=new Date(year,month+1,0).getDate();
+  const key=monthKey(year,month);
+  try{
+    const stored=localStorage.getItem(key);
+    if(stored&&localStorage.getItem(key+'-edited')==='1'){
+      const parsed=JSON.parse(stored);
+      if(Array.isArray(parsed)&&parsed.length===count&&parsed.every(Number.isFinite)) return parsed;
+    }
+    if(year===2026&&month===10){
+      const legacy=JSON.parse(localStorage.getItem('dashboardPlusDailyAmounts')||'null');
+      if(Array.isArray(legacy)&&legacy.length===count&&legacy.every(Number.isFinite)) return legacy;
+      return novemberSeed.slice(0,count);
+    }
+  }catch(error){}
+  return Array(count).fill(0);
+}
+function monthOpeningBalance(year,month){
+  const key=monthKey(year,month)+'-openingOverride';
+  try{
+    const override=localStorage.getItem(key);
+    if(override!==null&&Number.isFinite(Number(override))) return Number(override);
+  }catch(error){}
+  const firstMonth=new Date(2026,9,1);
+  const currentMonth=new Date(year,month,1);
+  let baseDeposit=200;
+  try{
+    const savedBase=localStorage.getItem('dashboardPlusBaseDeposit');
+    if(savedBase!==null&&Number.isFinite(Number(savedBase))) baseDeposit=Number(savedBase);
+    else{
+      const legacyBase=localStorage.getItem('dashboardPlusStartingDeposit');
+      if(legacyBase!==null&&Number.isFinite(Number(legacyBase))) baseDeposit=Number(legacyBase);
+      localStorage.setItem('dashboardPlusBaseDeposit',String(baseDeposit));
+    }
+  }catch(error){}
+  if(currentMonth<=firstMonth) return baseDeposit;
+  const previousMonth=new Date(year,month-1,1);
+  const previousOpening=monthOpeningBalance(previousMonth.getFullYear(),previousMonth.getMonth());
+  const previousAmounts=storedMonthAmounts(previousMonth.getFullYear(),previousMonth.getMonth());
+  return Math.round((previousOpening+previousAmounts.reduce((sum,amount)=>sum+amount,0))*100)/100;
+}
 loadMonthData();
+startingDeposit=monthOpeningBalance(viewYear,viewMonth);
 let selectedDay=todayIndex;
 let rangeStartIndex=todayIndex;
 let rangeEndIndex=todayIndex;
@@ -585,6 +628,7 @@ function changeMonth(offset){
   viewYear=nextMonthDate.getFullYear();
   viewMonth=nextMonthDate.getMonth();
   loadMonthData();
+  startingDeposit=monthOpeningBalance(viewYear,viewMonth);
   selectedDay=todayIndex;
   rangeStartIndex=todayIndex;rangeEndIndex=todayIndex;
   rangeMode=false;hasUserDateSelection=false;dateSelectionCleared=false;dateSelectionActive=false;
