@@ -96,6 +96,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .month-navigation .month{position:relative;top:auto;left:auto;width:auto;margin:0;pointer-events:none}
 .month-arrow{pointer-events:auto;position:absolute;top:50%;transform:translateY(-50%);width:clamp(34px,8vw,58px);height:clamp(34px,8vw,58px);border:1px solid rgba(205,229,255,.18);border-radius:50%;background:rgba(180,211,255,.09);color:rgba(239,248,255,.8);font:300 clamp(25px,6vw,42px)/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:grid;place-items:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
 .month-arrow:active{background:rgba(44,211,255,.2);border-color:rgba(60,224,255,.6);transform:translateY(-50%) scale(.94)}
+.month-arrow:disabled{opacity:.22;cursor:default;pointer-events:none;box-shadow:none}
 #previousMonth{left:4%}#nextMonth{right:4%}
 @media(min-width:700px){#previousMonth{left:12%}#nextMonth{right:12%}}
 </style>
@@ -538,11 +539,13 @@ function scrollCalendarToToday(smooth=true){
   choose(todayIndex);
 }
 scrollCalendarToToday(false);
+const earliestCalendarMonth=new Date(2026,9,1);
 function changeMonth(offset){
   if(depositBackdrop.classList.contains('open')) return;
-  viewMonth+=offset;
-  if(viewMonth<0){viewMonth=11;viewYear--;}
-  if(viewMonth>11){viewMonth=0;viewYear++;}
+  const nextMonthDate=new Date(viewYear,viewMonth+offset,1);
+  if(nextMonthDate<earliestCalendarMonth) return;
+  viewYear=nextMonthDate.getFullYear();
+  viewMonth=nextMonthDate.getMonth();
   loadMonthData();
   selectedDay=todayIndex;
   rangeStartIndex=todayIndex;rangeEndIndex=todayIndex;
@@ -550,6 +553,9 @@ function changeMonth(offset){
   document.querySelector('.stage').classList.remove('date-selection-active');
   days.innerHTML='';
   document.getElementById('monthTitle').textContent=monthLabel();
+  const previousMonthButton=document.getElementById('previousMonth');
+  previousMonthButton.disabled=(viewYear===2026&&viewMonth===9);
+  previousMonthButton.setAttribute('aria-disabled',String(previousMonthButton.disabled));
   buildMonthDays();
   syncEditorDateFields();
   scrollCalendarToToday(false);
