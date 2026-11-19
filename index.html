@@ -113,7 +113,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
         <div><label for="rangeStartDate">Start date</label><input id="rangeStartDate" type="number" inputmode="numeric" min="1" max="30" placeholder="Day"></div>
         <div><label for="rangeEndDate">End date</label><input id="rangeEndDate" type="number" inputmode="numeric" min="1" max="30" placeholder="Day"></div>
       </div>
-      <label for="periodAmount">Calculated amount for period ($)</label>
+      <label for="periodAmount">Edit total amount for selected period ($)</label>
       <input id="periodAmount" type="number" inputmode="decimal" step="0.01" autocomplete="off" value="0">
       <button type="button" class="selection-clear" id="clearDateSelection">Clear selection</button>
     </div>
@@ -160,7 +160,7 @@ function openDepositEditor(showDateSelection=false){
   const start=rangeStartIndex===null?date:rangeStartIndex+1;
   const end=rangeEndIndex===null?date:rangeEndIndex+1;
   document.getElementById('depositTitle').textContent=showDateSelection?(rangeMode?'Edit period · '+start+'–'+end+' November':'Edit date · '+date+' November'):'Edit deposit · '+date+' November';
-  document.getElementById('depositDescription').textContent=showDateSelection?(rangeMode?'The selected date range and its calculated earnings are synchronized below. You can adjust either date.':'The selected date is synchronized below. You can adjust the date or select a range.'):'Set the balance for this date. Previous and following balances will recalculate automatically.';
+  document.getElementById('depositDescription').textContent=showDateSelection?(rangeMode?'Enter the total amount for the selected period. It will be distributed across the selected dates, and the chart and balances will update.':'Enter the amount for this date. The chart and balances will update.'):'Set the balance for this date. Previous and following balances will recalculate automatically.';
   syncEditorDateFields();
   const points=chartPoints();
   depositInput.value=String(points[selectedDay+1].balance);
