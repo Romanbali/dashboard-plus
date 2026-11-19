@@ -188,7 +188,7 @@ function openDepositEditor(showDateSelection=false){
   const date=selectedDay+1;
   const start=rangeStartIndex===null?date:Math.min(rangeStartIndex,rangeEndIndex)+1;
   const end=rangeEndIndex===null?date:Math.max(rangeStartIndex,rangeEndIndex)+1;
-  document.getElementById('depositTitle').textContent=showDateSelection?(rangeMode?'Edit period · '+start+'–'+end+' November 2026':'Edit date · '+date+' November 2026'):'Edit deposit · '+date+' November 2026';
+  document.getElementById('depositTitle').textContent=showDateSelection?(rangeMode?'Edit period · '+start+'–'+end+' '+monthLabel():'Edit date · '+date+' '+monthLabel()):'Edit deposit · '+date+' '+monthLabel();
   document.getElementById('depositDescription').textContent=showDateSelection?(rangeMode?'Enter the daily amount to apply separately to every date in the selected period. The chart and balances will update.':'Enter the amount to apply to this date. The chart and balances will update.'):'Set the balance for this date. Previous and following balances will recalculate automatically.';
   syncEditorDateFields();
   const points=chartPoints();
@@ -267,7 +267,8 @@ function loadMonthData(){
       if(Array.isArray(parsed)&&parsed.length===count&&parsed.every(n=>Number.isFinite(n))) amounts=parsed;
       else amounts=Array(count).fill(15);
     }else if(viewYear===2026&&viewMonth===10){
-      amounts=novemberSeed.slice(0,count);
+      const legacy=JSON.parse(localStorage.getItem('dashboardPlusDailyAmounts')||'null');
+      amounts=Array.isArray(legacy)&&legacy.length===count&&legacy.every(n=>Number.isFinite(n))?legacy:novemberSeed.slice(0,count);
     }else amounts=Array(count).fill(15);
   }catch(error){amounts=(viewYear===2026&&viewMonth===10?novemberSeed.slice(0,count):Array(count).fill(15));}
   todayDate=isCurrentViewMonth()?new Date().getDate():(new Date(viewYear,viewMonth,1)<new Date(new Date().getFullYear(),new Date().getMonth(),1)?count:1);
@@ -400,7 +401,7 @@ function curvePath(points,from,to){
 
 function renderDateSelection(){
   [...days.children].forEach((el,n)=>{
-    el.classList.toggle('dim',n>todayIndex);
+    el.classList.toggle('dim',isFutureDate(n));
     el.classList.remove('selected','range-start','range-end','in-range');
     let pressed=false;
     if(!hasUserDateSelection){
