@@ -203,7 +203,7 @@ function chartPoints(){
   const center=(max+min)/2;
   return balances.map((balance,index)=>({
     x:20+920*index/(balances.length-1),
-    y:90-92*(balance-center)/visualRange,
+    y:90-70*(balance-center)/visualRange,
     balance
   }));
 }
