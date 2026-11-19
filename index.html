@@ -287,19 +287,21 @@ function renderDateSelection(){
   [...days.children].forEach((el,n)=>{
     el.classList.toggle('dim',n>todayIndex);
     el.classList.remove('selected','range-start','range-end','in-range');
+    let pressed=false;
     if(!hasUserDateSelection){
-      if(!dateSelectionCleared) el.classList.toggle('selected',n===todayIndex);
-      return;
+      pressed=!dateSelectionCleared&&n===todayIndex;
+      if(pressed) el.classList.add('selected');
+    }else if(!rangeMode){
+      pressed=n===rangeStartIndex;
+      if(pressed) el.classList.add('selected');
+    }else{
+      const low=Math.min(rangeStartIndex,rangeEndIndex);
+      const high=Math.max(rangeStartIndex,rangeEndIndex);
+      if(n===rangeStartIndex){el.classList.add('range-start');pressed=true;}
+      else if(n===rangeEndIndex){el.classList.add('range-end');pressed=true;}
+      else if(n>low&&n<high){el.classList.add('in-range');pressed=true;}
     }
-    if(!rangeMode){
-      el.classList.toggle('selected',n===rangeStartIndex);
-      return;
-    }
-    const low=Math.min(rangeStartIndex,rangeEndIndex);
-    const high=Math.max(rangeStartIndex,rangeEndIndex);
-    if(n===rangeStartIndex) el.classList.add('range-start');
-    else if(n===rangeEndIndex) el.classList.add('range-end');
-    else if(n>low&&n<high) el.classList.add('in-range');
+    el.setAttribute('aria-pressed',String(pressed));
   });
 }
 function periodTotal(){
