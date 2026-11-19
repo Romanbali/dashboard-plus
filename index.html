@@ -520,7 +520,7 @@ function choose(i){
   const activeCurve=curvePath(points,0,balanceIndex);
   document.getElementById('activeLine').setAttribute('d',activeCurve);
   document.querySelector('svg path.glow').setAttribute('d',activeCurve);
-  document.querySelector('svg path.future').setAttribute('d',curvePath(points,balanceIndex,points.length-1));
+  document.querySelector('svg path.future').setAttribute('d','M '+point.x+' '+point.y+' L '+forecastPoint.x+' '+forecastPoint.y);
   const marker=document.querySelector('.marker');
   const halo=document.querySelector('.marker-halo');
   marker.setAttribute('cx',point.x);
