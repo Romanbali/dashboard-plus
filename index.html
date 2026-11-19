@@ -409,6 +409,15 @@ function selectCalendarDate(i){
 function choose(i){
   selectedDay=i;
   renderDateSelection();
+  // Refresh each visible daily amount immediately after in-memory edits.
+  [...days.children].forEach((day,index)=>{
+    const amount=amounts[index];
+    const label=day.querySelector('.amount');
+    if(!label) return;
+    label.classList.toggle('negative',amount<0);
+    label.classList.toggle('positive',amount>=0);
+    label.textContent=(amount<0?'-':'')+String.fromCharCode(36)+String(Math.abs(amount));
+  });
   const points=chartPoints();
   const balanceIndex=i+1;
   const point=points[balanceIndex];
