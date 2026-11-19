@@ -113,7 +113,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
         <div><label for="rangeStartDate">Start date</label><input id="rangeStartDate" type="number" inputmode="numeric" min="1" max="30" placeholder="Day"></div>
         <div><label for="rangeEndDate">End date</label><input id="rangeEndDate" type="number" inputmode="numeric" min="1" max="30" placeholder="Day"></div>
       </div>
-      <label for="periodAmount">Edit total amount for selected period ($)</label>
+      <label for="periodAmount">Amount per day for selected dates ($)</label>
       <input id="periodAmount" type="number" inputmode="decimal" step="0.01" autocomplete="off" value="0">
       <button type="button" class="selection-clear" id="clearDateSelection">Clear selection</button>
     </div>
@@ -160,7 +160,7 @@ function openDepositEditor(showDateSelection=false){
   const start=rangeStartIndex===null?date:rangeStartIndex+1;
   const end=rangeEndIndex===null?date:rangeEndIndex+1;
   document.getElementById('depositTitle').textContent=showDateSelection?(rangeMode?'Edit period · '+start+'–'+end+' November':'Edit date · '+date+' November'):'Edit deposit · '+date+' November';
-  document.getElementById('depositDescription').textContent=showDateSelection?(rangeMode?'Enter the total amount for the selected period. It will be distributed across the selected dates, and the chart and balances will update.':'Enter the amount for this date. The chart and balances will update.'):'Set the balance for this date. Previous and following balances will recalculate automatically.';
+  document.getElementById('depositDescription').textContent=showDateSelection?(rangeMode?'Enter the daily amount to apply separately to every date in the selected period. The chart and balances will update.':'Enter the amount to apply to this date. The chart and balances will update.'):'Set the balance for this date. Previous and following balances will recalculate automatically.';
   syncEditorDateFields();
   const points=chartPoints();
   depositInput.value=String(points[selectedDay+1].balance);
@@ -191,15 +191,8 @@ document.getElementById('saveDeposit').addEventListener('click',()=>{
     if(rangeStartIndex===null||rangeEndIndex===null){periodAmountInput.focus();return;}
     const low=Math.min(rangeStartIndex,rangeEndIndex);
     const high=Math.max(rangeStartIndex,rangeEndIndex);
-    const count=high-low+1;
-    const totalCents=Math.round(targetPeriodTotal*100);
-    const baseCents=Math.trunc(totalCents/count);
-    let remainder=totalCents-baseCents*count;
-    for(let i=low;i<=high;i++){
-      const extra=remainder>0?1:remainder<0?-1:0;
-      amounts[i]=(baseCents+extra)/100;
-      remainder-=extra;
-    }
+    const dailyAmount=Math.round(targetPeriodTotal*100)/100;
+    for(let i=low;i<=high;i++) amounts[i]=dailyAmount;
     try{localStorage.setItem('dashboardPlusDailyAmounts',JSON.stringify(amounts));}catch(error){}
     closeDepositEditor();
     choose(selectedDay);
