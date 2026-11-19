@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="theme-color" content="#022b80">
+<meta name="theme-color" content="#171717">
 <title>November 2026</title>
 <style>
 *{box-sizing:border-box}
@@ -133,6 +133,63 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .selection-action:active{transform:scale(.97)}
 .stage.date-selection-active .edit-selection-button{display:none}
 
+
+/* Monochrome graphite / porcelain visual system */
+:root{color-scheme:dark}
+html,body{background:#111 !important;color:#f4f4f4}
+body{background:#111 !important;color:#f4f4f4}
+.stage{background:linear-gradient(155deg,#171717 0%,#202020 48%,#292929 100%) !important}
+.stage:before{background:radial-gradient(ellipse 85% 45% at 50% 31%,rgba(255,255,255,.035),transparent 76%),radial-gradient(ellipse 90% 52% at 52% 100%,rgba(255,255,255,.025),transparent 80%) !important}
+.month{color:#f5f5f5}
+.month-arrow{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.055);color:#eee;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.month-arrow:active{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5)}
+.chart .glow{stroke:#fff;opacity:.23}
+.chart .line{stroke:#f4f4f4;filter:url(#lineGlow)}
+.chart .future{stroke:rgba(255,255,255,.82)}
+.marker,.marker-halo{fill:#fff}
+.marker-line{stroke:rgba(255,255,255,.65)}
+.forecast-marker{fill:#eee;stroke:rgba(255,255,255,.3)}
+.negative-point-halo{fill:#fff;opacity:.25}
+.negative-point{fill:#fff;stroke:#fff}
+.forecast-value{color:rgba(255,255,255,.68)}
+.pill{background:rgba(255,255,255,.13);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.08)}
+.day{background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));border-color:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 7px 19px rgba(0,0,0,.22);color:#f5f5f5}
+.day .weekday,.day .date{color:#f1f1f1}
+.day .amount,.day.selected .amount{color:rgba(255,255,255,.88);text-shadow:0 0 7px rgba(255,255,255,.12)}
+.day .amount.negative,.day.selected .amount.negative{color:#fff;text-shadow:0 0 7px rgba(255,255,255,.2)}
+.day.dim .amount{color:rgba(255,255,255,.3)}
+.day.dim,.day.future{background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.035);box-shadow:none}
+.day.dim .weekday,.day.dim .date,.day.future .weekday,.day.future .date{color:rgba(255,255,255,.32)}
+.day.selected{border:2px solid #fff;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 0 15px rgba(255,255,255,.2),inset 0 0 9px rgba(255,255,255,.08)}
+.day.in-range,.day.range-start,.day.range-end,
+.stage.date-selection-active .days .day.in-range,
+.stage.date-selection-active .days .day.range-start,
+.stage.date-selection-active .days .day.range-end{background:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.08)) !important;border-color:rgba(255,255,255,.68) !important;box-shadow:inset 0 0 13px rgba(255,255,255,.09),0 0 10px rgba(255,255,255,.12) !important}
+.deposit-backdrop{background:rgba(0,0,0,.72)}
+.deposit-dialog{border-color:rgba(255,255,255,.16);background:linear-gradient(155deg,#292929,#171717);box-shadow:0 18px 60px rgba(0,0,0,.6);color:#f5f5f5}
+.deposit-dialog p{color:rgba(255,255,255,.68)}
+.deposit-dialog label{color:rgba(255,255,255,.8)}
+.deposit-dialog input{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff}
+.deposit-dialog input:focus{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.1)}
+.selection-editor{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.035)}
+.selection-clear{color:#eee}
+.deposit-actions{background:linear-gradient(180deg,rgba(28,28,28,.94),#191919 30%)}
+.deposit-actions button{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff}
+.deposit-actions .save{border:1px solid rgba(255,255,255,.22);background:#f1f1f1;color:#171717}
+.edit-selection-button{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.09);box-shadow:0 0 18px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.15),0 8px 24px rgba(0,0,0,.3);color:#fff}
+.edit-selection-icon{background:rgba(255,255,255,.13);color:#fff}
+.edit-selection-arrow{color:rgba(255,255,255,.8)}
+.selection-action{border-color:rgba(255,255,255,.25);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 7px 20px rgba(0,0,0,.3)}
+.selection-action.cancel{background:rgba(255,255,255,.09)}
+.selection-action.confirm{border-color:rgba(255,255,255,.3);background:#f1f1f1;color:#171717;box-shadow:0 0 15px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.5)}
+.habits{color:#f5f5f5}
+.habit-card{border-color:rgba(255,255,255,.2);background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 7px 20px rgba(0,0,0,.24);color:#f5f5f5}
+.habit-subtitle,.habit-stats{color:rgba(255,255,255,.78)}
+.habit-toggle{background:rgba(255,255,255,.13);color:#fff}
+.habit-card.done,.habit-card.mode-active{border-color:rgba(255,255,255,.62);background:linear-gradient(145deg,rgba(255,255,255,.17),rgba(255,255,255,.055));box-shadow:0 0 13px rgba(255,255,255,.1),inset 0 0 14px rgba(255,255,255,.06)}
+.habit-card.done .habit-toggle{background:rgba(255,255,255,.24);color:#fff;box-shadow:0 0 12px rgba(255,255,255,.12)}
+.habit-day-marker.habit-day-done{color:#fff;text-shadow:0 0 9px rgba(255,255,255,.3)}
+
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -174,7 +231,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 <section class="habits" aria-label="Ежедневные привычки">
   <button class="habit-card" id="coffeeHabit" type="button" aria-pressed="false">
     <span class="habit-main">
-      <span class="habit-icon" aria-hidden="true" style="font-size:clamp(27px,6.7vw,58px);line-height:1">🥤</span>
+      <svg class="habit-icon" viewBox="0 0 64 72" aria-hidden="true"><path d="M14 8h36l-4 54H18z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M18 20h28M20 52h24" stroke="currentColor" stroke-width="2" opacity=".65"/><path d="M22 5h20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
       <span class="habit-copy"><span class="habit-name">КОФЕ</span><span class="habit-subtitle">Maximum 1 cup per day</span></span>
       <span class="habit-toggle" aria-hidden="true">◉</span>
     </span>
