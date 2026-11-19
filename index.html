@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="theme-color" content="#f2f2f2">
+<meta name="theme-color" content="#022b80">
 <title>November 2026</title>
 <style>
 *{box-sizing:border-box}
@@ -102,185 +102,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .month-arrow:disabled{opacity:.22;cursor:default;pointer-events:none;box-shadow:none}
 #previousMonth{left:4%}#nextMonth{right:4%}
 @media(min-width:700px){#previousMonth{left:12%}#nextMonth{right:12%}}
-
-
-/* Refined layout for habit cards */
-.habits{position:absolute;left:2.8%;top:35.8%;width:94.4%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2.2%;z-index:2}
-.habit-card{width:100%;height:auto;min-height:0;aspect-ratio:2.58/1;padding:3.4% 4.2% 2.8%;border:1px solid rgba(211,231,255,.28);border-radius:clamp(14px,2.7vw,27px);background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.065));box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 7px 20px rgba(0,18,68,.16);color:#f5f8ff;font-family:inherit;text-align:left;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);transition:border-color .18s,background .18s,box-shadow .18s;overflow:hidden}
-.habit-main{display:flex;align-items:center;min-width:0;width:100%;gap:3.5%}
-.habit-icon{display:block;flex:0 0 19%;width:19%;height:clamp(28px,7vw,64px);max-height:none;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
-.habit-copy{display:flex;flex:1 1 auto;min-width:0;flex-direction:column;justify-content:center;gap:3px}
-.habit-name{display:block;font-size:clamp(12px,3.15vw,28px);font-weight:650;line-height:1.05;letter-spacing:.005em;white-space:nowrap}
-.habit-subtitle{display:block;margin-top:0;font-size:clamp(8px,1.8vw,15px);line-height:1.15;color:rgba(239,246,255,.86);white-space:nowrap}
-.habit-toggle{display:grid;place-items:center;flex:0 0 clamp(28px,9.6vw,66px);width:clamp(28px,9.6vw,66px);height:clamp(28px,5.2vw,42px);border-radius:999px;background:rgba(188,218,255,.2);color:rgba(242,248,255,.92);font-size:clamp(17px,4vw,30px);font-weight:500;line-height:1}
-.habit-stats{display:flex;align-items:center;justify-content:space-between;gap:5px;width:100%;padding-top:3.2%;border-top:1px solid rgba(220,237,255,.16);font-size:clamp(7px,1.55vw,14px);font-weight:550;color:rgba(237,245,255,.9);white-space:nowrap}
-.habit-stat{display:flex;align-items:center;gap:4px;min-width:0}
-.habit-stat-icon{font-size:1.12em;opacity:.9}
-.habit-card.done{border-color:rgba(119,238,255,.65);background:linear-gradient(145deg,rgba(50,193,235,.2),rgba(255,255,255,.065));box-shadow:0 0 13px rgba(55,210,255,.13),inset 0 0 14px rgba(74,220,255,.08)}
-.habit-card.done .habit-toggle{background:rgba(86,220,255,.28);color:#d9fbff;box-shadow:0 0 12px rgba(62,219,255,.22)}
-.habit-card:active{filter:brightness(1.15);transform:scale(.99)}
-@media(max-width:380px){.habits{gap:1.8%}.habit-card{padding-left:3%;padding-right:3%}.habit-name{font-size:clamp(11px,3vw,15px)}.habit-subtitle{font-size:clamp(7px,1.7vw,9px)}.habit-stats{font-size:clamp(6px,1.45vw,8px)}}
-
-.habit-card.mode-active{border-color:rgba(255,215,140,.85);box-shadow:0 0 16px rgba(255,194,91,.22),inset 0 0 14px rgba(255,220,160,.12)}
-.day .amount.habit-day-marker{font-size:clamp(13px,3vw,22px);font-weight:600;letter-spacing:0;line-height:1;color:rgba(228,240,255,.45);text-shadow:none;margin-top:-7px}
-.day .amount.habit-day-marker.habit-day-done{color:#ffe1a6;text-shadow:0 0 9px rgba(255,194,91,.45)}
-
-.selection-actions{position:absolute;left:50%;top:34.2%;transform:translateX(-50%);display:none;align-items:center;gap:10px;z-index:5}
-.stage.selection-actions-visible .selection-actions{display:flex}
-.selection-action{min-height:42px;padding:0 19px;border-radius:999px;border:1px solid rgba(220,237,255,.28);font-family:inherit;font-size:clamp(13px,3.4vw,16px);font-weight:550;color:#f5fbff;white-space:nowrap;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 7px 20px rgba(0,20,80,.2)}
-.selection-action.cancel{background:rgba(180,205,240,.16)}
-.selection-action.confirm{border-color:rgba(82,228,255,.55);background:linear-gradient(110deg,rgba(13,190,230,.48),rgba(47,111,255,.62));box-shadow:0 0 15px rgba(25,196,255,.18),inset 0 1px 0 rgba(255,255,255,.22)}
-.selection-action:active{transform:scale(.97)}
-.stage.date-selection-active .edit-selection-button{display:none}
-
-
-/* Monochrome graphite / porcelain visual system */
-:root{color-scheme:dark}
-html,body{background:#111 !important;color:#f4f4f4}
-body{background:#111 !important;color:#f4f4f4}
-.stage{background:linear-gradient(155deg,#171717 0%,#202020 48%,#292929 100%) !important}
-.stage:before{background:radial-gradient(ellipse 85% 45% at 50% 31%,rgba(255,255,255,.035),transparent 76%),radial-gradient(ellipse 90% 52% at 52% 100%,rgba(255,255,255,.025),transparent 80%) !important}
-.month{color:#f5f5f5}
-.month-arrow{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.055);color:#eee;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
-.month-arrow:active{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5)}
-.chart .glow{stroke:#fff;opacity:.23}
-.chart .line{stroke:#f4f4f4;filter:url(#lineGlow)}
-.chart .future{stroke:rgba(255,255,255,.82)}
-.marker,.marker-halo{fill:#fff}
-.marker-line{stroke:rgba(255,255,255,.65)}
-.forecast-marker{fill:#eee;stroke:rgba(255,255,255,.3)}
-.negative-point-halo{fill:#fff;opacity:.25}
-.negative-point{fill:#fff;stroke:#fff}
-.forecast-value{color:rgba(255,255,255,.68)}
-.pill{background:rgba(255,255,255,.13);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.08)}
-.day{background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));border-color:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 7px 19px rgba(0,0,0,.22);color:#f5f5f5}
-.day .weekday,.day .date{color:#f1f1f1}
-.day .amount,.day.selected .amount{color:rgba(255,255,255,.88);text-shadow:0 0 7px rgba(255,255,255,.12)}
-.day .amount.negative,.day.selected .amount.negative{color:#fff;text-shadow:0 0 7px rgba(255,255,255,.2)}
-.day.dim .amount{color:rgba(255,255,255,.3)}
-.day.dim,.day.future{background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.035);box-shadow:none}
-.day.dim .weekday,.day.dim .date,.day.future .weekday,.day.future .date{color:rgba(255,255,255,.32)}
-.day.selected{border:2px solid #fff;box-shadow:0 0 0 1px rgba(255,255,255,.22),0 0 15px rgba(255,255,255,.2),inset 0 0 9px rgba(255,255,255,.08)}
-.day.in-range,.day.range-start,.day.range-end,
-.stage.date-selection-active .days .day.in-range,
-.stage.date-selection-active .days .day.range-start,
-.stage.date-selection-active .days .day.range-end{background:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.08)) !important;border-color:rgba(255,255,255,.68) !important;box-shadow:inset 0 0 13px rgba(255,255,255,.09),0 0 10px rgba(255,255,255,.12) !important}
-.deposit-backdrop{background:rgba(0,0,0,.72)}
-.deposit-dialog{border-color:rgba(255,255,255,.16);background:linear-gradient(155deg,#292929,#171717);box-shadow:0 18px 60px rgba(0,0,0,.6);color:#f5f5f5}
-.deposit-dialog p{color:rgba(255,255,255,.68)}
-.deposit-dialog label{color:rgba(255,255,255,.8)}
-.deposit-dialog input{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff}
-.deposit-dialog input:focus{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.1)}
-.selection-editor{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.035)}
-.selection-clear{color:#eee}
-.deposit-actions{background:linear-gradient(180deg,rgba(28,28,28,.94),#191919 30%)}
-.deposit-actions button{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff}
-.deposit-actions .save{border:1px solid rgba(255,255,255,.22);background:#f1f1f1;color:#171717}
-.edit-selection-button{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.09);box-shadow:0 0 18px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.15),0 8px 24px rgba(0,0,0,.3);color:#fff}
-.edit-selection-icon{background:rgba(255,255,255,.13);color:#fff}
-.edit-selection-arrow{color:rgba(255,255,255,.8)}
-.selection-action{border-color:rgba(255,255,255,.25);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 7px 20px rgba(0,0,0,.3)}
-.selection-action.cancel{background:rgba(255,255,255,.09)}
-.selection-action.confirm{border-color:rgba(255,255,255,.3);background:#f1f1f1;color:#171717;box-shadow:0 0 15px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.5)}
-.habits{color:#f5f5f5}
-.habit-card{border-color:rgba(255,255,255,.2);background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035));box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 7px 20px rgba(0,0,0,.24);color:#f5f5f5}
-.habit-subtitle,.habit-stats{color:rgba(255,255,255,.78)}
-.habit-toggle{background:rgba(255,255,255,.13);color:#fff}
-.habit-card.done,.habit-card.mode-active{border-color:rgba(255,255,255,.62);background:linear-gradient(145deg,rgba(255,255,255,.17),rgba(255,255,255,.055));box-shadow:0 0 13px rgba(255,255,255,.1),inset 0 0 14px rgba(255,255,255,.06)}
-.habit-card.done .habit-toggle{background:rgba(255,255,255,.24);color:#fff;box-shadow:0 0 12px rgba(255,255,255,.12)}
-.habit-day-marker.habit-day-done{color:#fff;text-shadow:0 0 9px rgba(255,255,255,.3)}
-
-
-/* Light industrial interface inspired by the brushed-metal reference */
-:root{color-scheme:light}
-html,body{background:#f7f7f7 !important;color:#171717}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f7f7f7 !important;color:#171717}
-.stage{background:linear-gradient(145deg,#fdfdfd 0%,#f2f2f2 52%,#e9e9e9 100%) !important;border:clamp(7px,1.7vw,16px) solid #bfc0c1;border-radius:clamp(24px,5vw,48px);box-shadow:inset 0 0 0 1px #fff,0 0 0 1px #8f9091,0 18px 55px rgba(0,0,0,.12)}
-.stage:before{background:linear-gradient(135deg,rgba(255,255,255,.95),transparent 36%),radial-gradient(ellipse 80% 50% at 50% 75%,rgba(0,0,0,.035),transparent 75%) !important;pointer-events:none}
-.month{color:#151515;font-weight:500;letter-spacing:-.035em}
-.month-arrow{border:1px solid #b9b9b9;background:linear-gradient(145deg,#fff,#e5e5e5);color:#202020;box-shadow:inset 0 1px 0 #fff,0 2px 5px rgba(0,0,0,.1)}
-.month-arrow:active{background:#d9d9d9;border-color:#777}
-.chart .glow{stroke:#777;opacity:.2;filter:url(#blur)}
-.chart .line{stroke:#151515;filter:none;stroke-width:4}
-.chart .future{stroke:#555;stroke-width:2.5;stroke-dasharray:1 7}
-.marker,.marker-halo{fill:#111}
-.marker-halo{opacity:.16;filter:none}
-.marker-line{stroke:#777}
-.forecast-marker{fill:#222;stroke:#fff;stroke-width:1.5}
-.negative-point-halo{fill:#555;opacity:.18;filter:none}
-.negative-point{fill:#111;stroke:#fff;stroke-width:1}
-.forecast-value{color:#555}
-.pill{background:linear-gradient(145deg,#fff,#e8e8e8);border:1px solid #c8c8c8;color:#111;box-shadow:0 2px 7px rgba(0,0,0,.09),inset 0 1px 0 #fff}
-.days-window{scrollbar-width:none}
-.day{background:linear-gradient(145deg,#fff,#e9e9e9);border:1px solid #d2d2d2;box-shadow:inset 0 1px 0 #fff,0 3px 9px rgba(0,0,0,.07);color:#171717}
-.day .weekday,.day .date{color:#222}
-.day .amount,.day.selected .amount{color:#444;text-shadow:none}
-.day .amount.negative,.day.selected .amount.negative{color:#111;text-shadow:none}
-.day.dim .amount{color:rgba(0,0,0,.27)}
-.day.dim,.day.future{background:#f0f0f0;border-color:#e6e6e6;box-shadow:none}
-.day.dim .weekday,.day.dim .date,.day.future .weekday,.day.future .date{color:#aaa}
-.day.selected{border:2px solid #111;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.12),inset 0 0 0 1px #fff}
-.stage.date-selection-active .days .day.in-range,.stage.date-selection-active .days .day.range-start,.stage.date-selection-active .days .day.range-end{background:linear-gradient(145deg,#e4e4e4,#f9f9f9) !important;border-color:#777 !important;box-shadow:inset 0 0 0 1px #fff,0 2px 8px rgba(0,0,0,.1) !important}
-.deposit-backdrop{background:rgba(255,255,255,.72);backdrop-filter:blur(10px)}
-.deposit-dialog{border:1px solid #c7c7c7;background:linear-gradient(145deg,#fff,#ededed);box-shadow:0 18px 55px rgba(0,0,0,.2);color:#171717}
-.deposit-dialog p,.deposit-dialog label{color:#555}
-.deposit-dialog input{border:1px solid #c5c5c5;background:#fff;color:#111}
-.deposit-dialog input:focus{border-color:#555;box-shadow:0 0 0 3px rgba(0,0,0,.08)}
-.selection-editor{border-color:#d1d1d1;background:#f4f4f4}
-.selection-clear{color:#333}
-.deposit-actions{background:linear-gradient(180deg,rgba(244,244,244,.96),#ededed 30%)}
-.deposit-actions button{border:1px solid #c6c6c6;background:linear-gradient(145deg,#fff,#e6e6e6);color:#222}
-.deposit-actions .save{border:1px solid #111;background:#111;color:#fff}
-.edit-selection-button{border:1px solid #bdbdbd;background:linear-gradient(145deg,#fff,#e8e8e8);box-shadow:0 4px 14px rgba(0,0,0,.12),inset 0 1px 0 #fff;color:#111}
-.edit-selection-icon{background:#222;color:#fff}
-.edit-selection-arrow{color:#444}
-.selection-action{border:1px solid #bdbdbd;color:#171717;box-shadow:0 4px 12px rgba(0,0,0,.1),inset 0 1px 0 #fff}
-.selection-action.cancel{background:linear-gradient(145deg,#fff,#e9e9e9)}
-.selection-action.confirm{border-color:#111;background:#111;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.16)}
-.habit-card{border:1px solid #c3c3c3;background:linear-gradient(145deg,#fff,#ededed);box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(0,0,0,.08);color:#171717}
-.habit-subtitle,.habit-stats{color:#555}
-.habit-stats{border-top-color:#d0d0d0}
-.habit-toggle{background:linear-gradient(145deg,#fefefe,#dedede);color:#111;box-shadow:inset 0 1px 0 #fff,0 1px 4px rgba(0,0,0,.1)}
-.habit-card.done,.habit-card.mode-active{border-color:#777;background:linear-gradient(145deg,#fff,#e3e3e3);box-shadow:0 0 0 1px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.1),inset 0 0 0 1px #fff}
-.habit-card.done .habit-toggle{background:#171717;color:#fff;box-shadow:none}
-.habit-day-marker.habit-day-done{color:#111;text-shadow:none}
-.habit-card .habit-icon{color:#171717}
-.habit-card .habit-icon path[fill="#f4f8ff"],.habit-card .habit-icon rect[fill="#f4f8ff"]{fill:#171717}
-.habit-card .habit-icon path[stroke="#f4f8ff"]{stroke:#171717}
-
-
-/* Color accents over the light brushed-metal interface */
-.stage{background:linear-gradient(145deg,#fbfcff 0%,#f1f3f7 52%,#e6e9ef 100%) !important}
-.stage:before{background:radial-gradient(ellipse 78% 42% at 50% 25%,rgba(75,142,255,.12),transparent 75%),radial-gradient(ellipse 75% 48% at 52% 85%,rgba(45,190,150,.09),transparent 78%) !important}
-.month-arrow:active{background:linear-gradient(145deg,#dceaff,#c4d9ff);border-color:#7da8ed;color:#174b91}
-.chart .glow{stroke:#6b9cff;opacity:.32}
-.chart .line{stroke:#2675e8;filter:url(#lineGlow);stroke-width:4.2}
-.chart .future{stroke:#4b82ce;stroke-width:2.5;stroke-dasharray:1 7}
-.marker,.marker-halo{fill:#2878e8}
-.marker-halo{opacity:.22}
-.marker-line{stroke:#76a4e9}
-.forecast-marker{fill:#4386e9;stroke:#fff;stroke-width:1.5}
-.negative-point-halo{fill:#ff8a52;opacity:.25}
-.negative-point{fill:#f07836;stroke:#fff;stroke-width:1}
-.forecast-value{color:#4975b5}
-.pill{background:linear-gradient(145deg,#e8f1ff,#d5e5ff);border:1px solid #b7cef2;color:#1e4d8b;box-shadow:0 2px 8px rgba(48,103,190,.12),inset 0 1px 0 #fff}
-.day.selected{border:2px solid #347de2;box-shadow:0 0 0 1px rgba(52,125,226,.12),0 4px 14px rgba(52,125,226,.22),inset 0 0 0 1px #fff}
-.day.selected .date{color:#1759b5}
-.day .amount.negative,.day.selected .amount.negative{color:#d96835;text-shadow:none}
-.stage.date-selection-active .days .day.in-range,.stage.date-selection-active .days .day.range-start,.stage.date-selection-active .days .day.range-end{background:linear-gradient(145deg,#fff0e6,#ffe0d1) !important;border-color:#ee986c !important;box-shadow:inset 0 0 0 1px #fff,0 2px 8px rgba(224,112,58,.14) !important}
-.deposit-dialog input:focus{border-color:#4387e8;box-shadow:0 0 0 3px rgba(67,135,232,.13)}
-.deposit-actions .save{border:1px solid #2869c7;background:linear-gradient(110deg,#347fe6,#245fba);color:#fff}
-.edit-selection-button{border-color:#9ebce8;background:linear-gradient(120deg,rgba(229,241,255,.98),rgba(207,226,255,.96));box-shadow:0 4px 14px rgba(44,102,188,.14),inset 0 1px 0 #fff;color:#174b91}
-.edit-selection-icon{background:#347fe6;color:#fff}
-.selection-action.confirm{border-color:#2869c7;background:linear-gradient(110deg,#347fe6,#245fba);color:#fff;box-shadow:0 4px 12px rgba(42,104,193,.2)}
-.habit-card.done,.habit-card.mode-active{border-color:#75b9a1;background:linear-gradient(145deg,#f3fff9,#e0f5eb);box-shadow:0 0 0 1px rgba(48,157,111,.05),0 4px 14px rgba(42,145,104,.12),inset 0 0 0 1px #fff}
-.habit-card.done .habit-toggle{background:linear-gradient(145deg,#27ad79,#16875c);color:#fff;box-shadow:0 2px 7px rgba(28,139,93,.22)}
-.habit-card.mode-active:not(.done){border-color:#e4a16e;background:linear-gradient(145deg,#fffaf4,#fff0e2)}
-.habit-card.mode-active:not(.done) .habit-toggle{background:linear-gradient(145deg,#f5b16f,#e58b42);color:#fff}
-.habit-card:first-child .habit-icon{color:#bd6b36}
-.habit-card:nth-child(2) .habit-icon{color:#347fc5}
-.habit-day-marker.habit-day-done{color:#18875d;text-shadow:0 0 8px rgba(24,135,93,.2)}
-
 </style>
 </head>
 <body translate="no" class="notranslate">
@@ -310,35 +131,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
   <div class="days-window" id="daysWindow" aria-label="Scroll dates horizontally">
     <div class="days" id="days"></div>
   </div>
-  <div class="selection-actions" id="selectionActions" aria-label="Действия с выбранными датами">
-    <button type="button" class="selection-action cancel" id="cancelDateSelection">Отмена</button>
-    <button type="button" class="selection-action confirm" id="confirmDateSelection">Сохранить</button>
-  </div>
   <button class="edit-selection-button" id="editSelectionButton" type="button">
     <span class="edit-selection-icon" aria-hidden="true">✎</span>
     <span>Редактировать</span>
     <span class="edit-selection-arrow" aria-hidden="true">↗</span>
   </button>
-<section class="habits" aria-label="Ежедневные привычки">
-  <button class="habit-card" id="coffeeHabit" type="button" aria-pressed="false">
-    <span class="habit-main">
-      <svg class="habit-icon" viewBox="0 0 64 72" aria-hidden="true"><path d="M14 8h36l-4 54H18z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M18 20h28M20 52h24" stroke="currentColor" stroke-width="2" opacity=".65"/><path d="M22 5h20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-      <span class="habit-copy"><span class="habit-name">КОФЕ</span><span class="habit-subtitle">Maximum 1 cup per day</span></span>
-      <span class="habit-toggle" aria-hidden="true">◉</span>
-    </span>
-    <span class="habit-stats"><span class="habit-stat"><span class="habit-stat-icon">▢</span><span data-streak="coffee">0 дней подряд</span></span><span class="habit-stat"><span class="habit-stat-icon">🏆</span><span data-record="coffee">Рекорд 0 дней</span></span></span>
-  </button>
-  <button class="habit-card" id="pushupHabit" type="button" aria-pressed="false">
-    <span class="habit-main">
-      <svg class="habit-icon" viewBox="0 0 72 48" aria-hidden="true"><g fill="currentColor"><rect x="4" y="17" width="7" height="14" rx="2"/><rect x="13" y="10" width="7" height="28" rx="2"/><rect x="23" y="5" width="9" height="38" rx="3"/><rect x="40" y="5" width="9" height="38" rx="3"/><rect x="52" y="10" width="7" height="28" rx="2"/><rect x="61" y="17" width="7" height="14" rx="2"/></g><path d="M31 24h10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-      <span class="habit-copy"><span class="habit-name">ОТЖИМАНИЕ</span><span class="habit-subtitle">Каждый день</span></span>
-      <span class="habit-toggle" aria-hidden="true">✓</span>
-    </span>
-    <span class="habit-stats"><span class="habit-stat"><span class="habit-stat-icon">▢</span><span data-streak="pushup">0 дней подряд</span></span><span class="habit-stat"><span class="habit-stat-icon">🏆</span><span data-record="pushup">Рекорд 0 дней</span></span></span>
-  </button>
-</section>
 </main>
-
 <div class="deposit-backdrop" id="depositBackdrop" aria-hidden="true">
   <section class="deposit-dialog" role="dialog" aria-modal="true" aria-labelledby="depositTitle">
     <h2 id="depositTitle">Edit balance</h2>
@@ -361,110 +159,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
   </section>
 </div>
 <script>
-
-const habitStoreKey='dashboardPlusHabits';
-let habitData={};
-try{habitData=JSON.parse(localStorage.getItem(habitStoreKey)||'{}')||{};}catch(error){habitData={};}
-const habitIds=['coffee','pushup'];
-let activeHabitMode=null;
-let habitEditSnapshot=null;
-const habitDateKey=(date)=>date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
-function habitStats(id){
-  const today=new Date();
-  const todayKey=habitDateKey(today);
-  let streak=0;
-  const cursor=new Date(today.getFullYear(),today.getMonth(),today.getDate());
-  while(habitData[habitDateKey(cursor)]&&habitData[habitDateKey(cursor)][id]){
-    streak++;
-    cursor.setDate(cursor.getDate()-1);
-  }
-  let best=0,run=0,previous=null;
-  const dates=Object.keys(habitData).filter(key=>habitData[key]&&habitData[key][id]).sort();
-  for(const key of dates){
-    const d=new Date(key+'T12:00:00');
-    if(previous){const diff=Math.round((d-previous)/86400000);run=diff===1?run+1:1;}else run=1;
-    best=Math.max(best,run);previous=d;
-  }
-  return {done:!!(habitData[todayKey]&&habitData[todayKey][id]),streak,best};
-}
-function renderHabitCalendarMode(){
-  [...days.children].forEach((day,index)=>{
-    const label=day.querySelector('.amount');
-    if(!label)return;
-    if(activeHabitMode){
-      const key=habitDateKey(new Date(viewYear,viewMonth,index+1));
-      const done=!!(habitData[key]&&habitData[key][activeHabitMode]);
-      label.textContent=activeHabitMode==='coffee'?(done?'☕':'○'):(done?'✓':'○');
-      label.classList.toggle('habit-day-done',done);
-      label.classList.add('habit-day-marker');
-    }else{
-      label.classList.remove('habit-day-marker','habit-day-done');
-      const amount=amounts[index];
-      label.textContent=(amount<0?'-':'')+String.fromCharCode(36)+String(Math.abs(amount));
-    }
-  });
-  habitIds.forEach(id=>{
-    const button=document.getElementById(id==='coffee'?'coffeeHabit':'pushupHabit');
-    button.classList.toggle('mode-active',activeHabitMode===id);
-    button.setAttribute('aria-label',activeHabitMode===id?'Режим отметок включён. Нажмите и удерживайте, чтобы выйти':'Нажмите и удерживайте для отметок по дням');
-  });
-}
-function toggleHabitForDate(id,index){
-  const key=habitDateKey(new Date(viewYear,viewMonth,index+1));
-  if(!habitData[key])habitData[key]={};
-  habitData[key][id]=!habitData[key][id];
-  try{localStorage.setItem(habitStoreKey,JSON.stringify(habitData));}catch(error){}
-  renderHabits();
-  renderHabitCalendarMode();
-}
-function renderHabits(){
-  const todayKey=habitDateKey(new Date());
-  habitIds.forEach(id=>{
-    const button=document.getElementById(id==='coffee'?'coffeeHabit':'pushupHabit');
-    const stats=habitStats(id);
-    button.classList.toggle('done',stats.done);
-    button.setAttribute('aria-pressed',String(stats.done));
-    button.querySelector('.habit-toggle').textContent=stats.done?'✓':(id==='coffee'?'◉':'✓');
-    button.querySelector('[data-streak="'+id+'"]').textContent=stats.streak+' дней подряд';
-    button.querySelector('[data-record="'+id+'"]').textContent='Рекорд '+stats.best+' дней';
-  });
-}
-habitIds.forEach(id=>{
-  const button=document.getElementById(id==='coffee'?'coffeeHabit':'pushupHabit');
-  let holdTimer=null,held=false;
-  button.addEventListener('pointerdown',event=>{
-    if(event.pointerType==='mouse'&&event.button!==0)return;
-    held=false;
-    clearTimeout(holdTimer);
-    holdTimer=setTimeout(()=>{
-      held=true;
-      if(activeHabitMode===id){
-        activeHabitMode=null;
-        habitEditSnapshot=null;
-        hideSelectionActions();
-      }else{
-        if(!activeHabitMode) habitEditSnapshot=JSON.parse(JSON.stringify(habitData));
-        activeHabitMode=id;
-        hideSelectionActions();
-      }
-      renderHabitCalendarMode();
-    },520);
-  });
-  const cancelHold=()=>{clearTimeout(holdTimer);holdTimer=null;};
-  button.addEventListener('pointerup',cancelHold);
-  button.addEventListener('pointercancel',cancelHold);
-  button.addEventListener('pointerleave',cancelHold);
-  button.addEventListener('contextmenu',event=>event.preventDefault());
-  button.addEventListener('click',event=>{
-    event.preventDefault();
-    event.stopPropagation();
-    if(held){held=false;return;}
-    if(activeHabitMode===id){activeHabitMode=null;habitEditSnapshot=null;hideSelectionActions();renderHabitCalendarMode();return;}
-    toggleHabitForDate(id,todayIndex);
-  });
-});
-renderHabits();
-
 const days=document.getElementById('days');
 const value=document.getElementById('value');
 const depositBackdrop=document.getElementById('depositBackdrop');
@@ -691,7 +385,6 @@ function buildMonthDays(){
   btn.addEventListener('contextmenu',event=>event.preventDefault());
   btn.addEventListener('click',()=>{
     if(longPressTriggered){longPressTriggered=false;return;}
-    if(activeHabitMode){toggleHabitForDate(activeHabitMode,index);return;}
     if(dateSelectionActive) selectCalendarDate(index);
     else choose(index);
   });
@@ -825,7 +518,6 @@ function choose(i){
   renderDateSelection();
   // Refresh each visible daily amount immediately after in-memory edits.
   [...days.children].forEach((day,index)=>{
-    if(activeHabitMode)return;
     const amount=amounts[index];
     const label=day.querySelector('.amount');
     if(!label) return;
@@ -947,27 +639,17 @@ function changeMonth(offset){
   viewMonth=nextMonthDate.getMonth();
   loadMonthData();
   startingDeposit=monthOpeningBalance(viewYear,viewMonth);
-  const keepDateEditing=dateSelectionActive;
   selectedDay=todayIndex;
   rangeStartIndex=todayIndex;rangeEndIndex=todayIndex;
-  rangeMode=false;hasUserDateSelection=keepDateEditing;dateSelectionCleared=false;
-  const stage=document.querySelector('.stage');
-  stage.classList.toggle('date-selection-active',keepDateEditing);
-  stage.classList.remove('selection-actions-visible');
+  rangeMode=false;hasUserDateSelection=false;dateSelectionCleared=false;dateSelectionActive=false;
+  document.querySelector('.stage').classList.remove('date-selection-active');
   days.innerHTML='';
   document.getElementById('monthTitle').textContent=monthLabel();
   const previousMonthButton=document.getElementById('previousMonth');
   previousMonthButton.disabled=(viewYear===2026&&viewMonth===9);
   previousMonthButton.setAttribute('aria-disabled',String(previousMonthButton.disabled));
   buildMonthDays();
-  if(activeHabitMode) renderHabitCalendarMode();
-  if(keepDateEditing){
-    renderDateSelection();
-    syncEditorDateFields();
-    stage.classList.add('selection-actions-visible');
-  }else{
-    syncEditorDateFields();
-  }
+  syncEditorDateFields();
   scrollCalendarToToday(false);
 }
 document.getElementById('previousMonth').addEventListener('click',()=>changeMonth(-1));
@@ -1046,54 +728,19 @@ window.addEventListener('resize',()=>choose(selectedDay));
 
 // Outside the date strip, leave date-editing mode and return to today's date.
 // Taps on the chart, balance pill, date cards or edit button keep their own behavior.
-const stageRoot=document.querySelector('.stage');
-const selectionActions=document.getElementById('selectionActions');
-function hideSelectionActions(){stageRoot.classList.remove('selection-actions-visible');}
-function cancelHabitEditing(){
-  if(habitEditSnapshot) habitData=JSON.parse(JSON.stringify(habitEditSnapshot));
-  try{localStorage.setItem(habitStoreKey,JSON.stringify(habitData));}catch(error){}
-  habitEditSnapshot=null;
-  activeHabitMode=null;
-  hideSelectionActions();
-  renderHabits();
-  renderHabitCalendarMode();
-}
-function saveHabitEditing(){
-  try{localStorage.setItem(habitStoreKey,JSON.stringify(habitData));}catch(error){}
-  habitEditSnapshot=null;
-  activeHabitMode=null;
-  hideSelectionActions();
-  renderHabits();
-  renderHabitCalendarMode();
-}
-function cancelCalendarSelection(){
-  hideSelectionActions();
-  dateSelectionActive=false;
-  stageRoot.classList.remove('date-selection-active');
-  rangeStartIndex=null;rangeEndIndex=null;rangeMode=false;
-  hasUserDateSelection=false;dateSelectionCleared=false;
-  renderDateSelection();
-  syncEditorDateFields();
-  scrollCalendarToToday(true);
-}
-document.getElementById('cancelDateSelection').addEventListener('click',event=>{
-  event.stopPropagation();
-  if(activeHabitMode){cancelHabitEditing();return;}
-  cancelCalendarSelection();
-});
-document.getElementById('confirmDateSelection').addEventListener('click',event=>{
-  event.stopPropagation();
-  if(activeHabitMode){saveHabitEditing();return;}
-  hideSelectionActions();
-  openDepositEditor(true);
-});
-stageRoot.addEventListener('click',event=>{
-  if(event.target.closest('.days-window, #editSelectionButton, .habits, .selection-actions')) return;
+document.querySelector('.stage').addEventListener('click',event=>{
+  if(event.target.closest('.days-window, #editSelectionButton')) return;
   if(depositBackdrop.classList.contains('open')) return;
-  if(activeHabitMode||stageRoot.classList.contains('date-selection-active')){
-    selectionActions.classList.remove('hidden');
-    stageRoot.classList.add('selection-actions-visible');
-    return;
+  const stage=document.querySelector('.stage');
+  if(stage.classList.contains('date-selection-active')){
+    dateSelectionActive=false;
+    stage.classList.remove('date-selection-active');
+    rangeStartIndex=null;
+    rangeEndIndex=null;
+    rangeMode=false;
+    hasUserDateSelection=false;
+    dateSelectionCleared=false;
+    renderDateSelection();
   }
   if(event.target.closest('.chart, #value')) return;
   scrollCalendarToToday(true);
