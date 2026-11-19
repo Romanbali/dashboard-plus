@@ -790,10 +790,13 @@ function changeMonth(offset){
   viewMonth=nextMonthDate.getMonth();
   loadMonthData();
   startingDeposit=monthOpeningBalance(viewYear,viewMonth);
+  const keepDateEditing=dateSelectionActive;
   selectedDay=todayIndex;
   rangeStartIndex=todayIndex;rangeEndIndex=todayIndex;
-  rangeMode=false;hasUserDateSelection=false;dateSelectionCleared=false;dateSelectionActive=false;
-  document.querySelector('.stage').classList.remove('date-selection-active');
+  rangeMode=false;hasUserDateSelection=keepDateEditing;dateSelectionCleared=false;
+  const stage=document.querySelector('.stage');
+  stage.classList.toggle('date-selection-active',keepDateEditing);
+  stage.classList.remove('selection-actions-visible');
   days.innerHTML='';
   document.getElementById('monthTitle').textContent=monthLabel();
   const previousMonthButton=document.getElementById('previousMonth');
@@ -801,7 +804,13 @@ function changeMonth(offset){
   previousMonthButton.setAttribute('aria-disabled',String(previousMonthButton.disabled));
   buildMonthDays();
   if(activeHabitMode) renderHabitCalendarMode();
-  syncEditorDateFields();
+  if(keepDateEditing){
+    renderDateSelection();
+    syncEditorDateFields();
+    stage.classList.add('selection-actions-visible');
+  }else{
+    syncEditorDateFields();
+  }
   scrollCalendarToToday(false);
 }
 document.getElementById('previousMonth').addEventListener('click',()=>changeMonth(-1));
