@@ -325,7 +325,6 @@ function loadMonthData(){
   todayIndex=Math.max(0,Math.min(count-1,todayDate-1));
   try{localStorage.setItem(key,JSON.stringify(amounts));}catch(error){}
 }
-loadMonthTransactions();
 let monthTransactions=[];
 function loadMonthTransactions(){
   try{const raw=JSON.parse(localStorage.getItem(monthKey()+'-transactions')||'[]');monthTransactions=Array.isArray(raw)?raw.filter(t=>t&&Number.isInteger(t.day)&&t.day>=0&&t.day<amounts.length&&(t.type==='deposit'||t.type==='withdrawal')&&Number.isFinite(t.amount)&&t.amount>0):[];}catch(error){monthTransactions=[];}
@@ -374,6 +373,7 @@ function monthOpeningBalance(year,month){
   return Math.round((previousOpening+previousAmounts.reduce((sum,amount)=>sum+amount,0))*100)/100;
 }
 loadMonthData();
+loadMonthTransactions();
 startingDeposit=monthOpeningBalance(viewYear,viewMonth);
 let selectedDay=todayIndex;
 let rangeStartIndex=todayIndex;
@@ -696,6 +696,7 @@ function changeMonth(offset){
   viewYear=nextMonthDate.getFullYear();
   viewMonth=nextMonthDate.getMonth();
   loadMonthData();
+  loadMonthTransactions();
   startingDeposit=monthOpeningBalance(viewYear,viewMonth);
   selectedDay=todayIndex;
   rangeStartIndex=todayIndex;rangeEndIndex=todayIndex;
