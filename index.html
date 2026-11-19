@@ -37,6 +37,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .deposit-dialog label{display:block;margin-bottom:7px;font-size:13px;color:rgba(235,244,255,.82)}
 .deposit-dialog input{width:100%;height:52px;padding:0 14px;border:1px solid rgba(220,237,255,.28);border-radius:12px;outline:none;background:rgba(255,255,255,.12);color:#fff;font-family:inherit;font-size:22px;font-weight:500}
 .deposit-dialog input:focus{border-color:#59eaff;box-shadow:0 0 0 3px rgba(40,220,255,.14)}
+.selection-editor{margin:0 0 18px;padding:13px;border:1px solid rgba(210,230,255,.15);border-radius:14px;background:rgba(255,255,255,.055)}
+.selection-date-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.selection-date-fields input{height:42px;font-size:17px}
+.selection-editor>label{margin-top:10px}
+.selection-editor input[readonly]{height:42px;font-size:17px;opacity:.9}
+.selection-clear{display:block;margin:10px 0 0 auto;padding:5px 0;border:0;background:transparent;color:#9feeff;font:inherit;font-size:13px}
+.day.in-range{background:linear-gradient(145deg,rgba(35,211,255,.24),rgba(75,133,255,.16));border-color:rgba(89,234,255,.35);box-shadow:inset 0 0 12px rgba(75,220,255,.1)}
+.day.range-start,.day.range-end{border:1.5px solid rgba(90,235,255,.9);background:linear-gradient(145deg,rgba(36,210,255,.3),rgba(60,119,255,.22));box-shadow:0 0 10px rgba(52,220,255,.3),inset 0 0 10px rgba(65,225,255,.14)}
+.day.range-start{border-radius:calc(min(100vw,1024px)*.0234) 5px 5px calc(min(100vw,1024px)*.0234)}
+.day.range-end{border-radius:5px calc(min(100vw,1024px)*.0234) calc(min(100vw,1024px)*.0234) 5px}
 .deposit-actions{position:sticky;bottom:0;display:flex;gap:10px;margin:18px -24px 0;padding:12px 24px 24px;background:linear-gradient(180deg,rgba(12,57,133,.9),#123f8d 30%);}
 .deposit-actions button{flex:1;min-height:44px;border:1px solid rgba(230,240,255,.2);border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:15px;font-weight:500}
 .deposit-actions .save{border:0;background:linear-gradient(100deg,#13c9ed,#397aff);color:#fff}
@@ -83,6 +93,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
   <section class="deposit-dialog" role="dialog" aria-modal="true" aria-labelledby="depositTitle">
     <h2 id="depositTitle">Edit balance</h2>
     <p id="depositDescription">Set the deposit balance for the selected day. This day's result and all following balances will recalculate automatically.</p>
+    <div class="selection-editor">
+      <div class="selection-date-fields">
+        <div><label for="rangeStartDate">Start date</label><input id="rangeStartDate" type="number" inputmode="numeric" min="1" max="30" placeholder="Day"></div>
+        <div><label for="rangeEndDate">End date</label><input id="rangeEndDate" type="number" inputmode="numeric" min="1" max="30" placeholder="Day"></div>
+      </div>
+      <label for="periodAmount">Calculated amount for period ($)</label>
+      <input id="periodAmount" type="text" readonly value="0">
+      <button type="button" class="selection-clear" id="clearDateSelection">Clear selection</button>
+    </div>
     <label for="depositInput">Balance on selected day ($)</label>
     <input id="depositInput" type="number" inputmode="decimal" step="0.01" autocomplete="off">
     <div class="deposit-actions">
@@ -96,6 +115,10 @@ const days=document.getElementById('days');
 const value=document.getElementById('value');
 const depositBackdrop=document.getElementById('depositBackdrop');
 const depositInput=document.getElementById('depositInput');
+const rangeStartDateInput=document.getElementById('rangeStartDate');
+const rangeEndDateInput=document.getElementById('rangeEndDate');
+const periodAmountInput=document.getElementById('periodAmount');
+const clearDateSelectionButton=document.getElementById('clearDateSelection');
 
 function updateVisibleViewport(){
   const viewport=window.visualViewport;
@@ -117,8 +140,11 @@ try{
 }catch(error){}
 function openDepositEditor(){
   const date=selectedDay+1;
-  document.getElementById('depositTitle').textContent='Edit balance · '+date+' November';
-  document.getElementById('depositDescription').textContent='Enter the balance you want for this date. The starting deposit and all previous and following balances will be recalculated consistently.';
+  const start=rangeStartIndex===null?date:rangeStartIndex+1;
+  const end=rangeEndIndex===null?date:rangeEndIndex+1;
+  document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+start+'–'+end+' November':'Edit balance · '+date+' November';
+  document.getElementById('depositDescription').textContent=rangeMode?'The selected date range and its calculated earnings are synchronized below. You can adjust either date.':'The selected date is synchronized below. You can adjust the date or select a range.';
+  syncEditorDateFields();
   const points=chartPoints();
   depositInput.value=String(points[selectedDay+1].balance);
   depositBackdrop.classList.add('open');
@@ -175,6 +201,10 @@ try{
 const todayDate=new Date().getDate();
 const todayIndex=Math.min(Math.max(todayDate,1),amounts.length)-1;
 let selectedDay=todayIndex;
+let rangeStartIndex=todayIndex;
+let rangeEndIndex=todayIndex;
+let rangeMode=false;
+let hasUserDateSelection=false;
 const weekdays=['Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
 
 amounts.forEach((amount,index)=>{
@@ -194,7 +224,7 @@ amounts.forEach((amount,index)=>{
   amountLabel.textContent=(amount<0?'-':'')+dollar+String(Math.abs(amount));
   btn.append(weekday,dateLabel,amountLabel);
   btn.setAttribute('aria-pressed',String(index===todayIndex));
-  btn.addEventListener('click',()=>choose(index));
+  btn.addEventListener('click',()=>selectCalendarDate(index));
   days.appendChild(btn);
 });
 
@@ -252,13 +282,59 @@ function curvePath(points,from,to){
   return d;
 }
 
-function choose(i){
-  selectedDay=i;
+function renderDateSelection(){
   [...days.children].forEach((el,n)=>{
     el.classList.toggle('dim',n>todayIndex);
-    el.classList.toggle('selected',n===i);
-    el.setAttribute('aria-pressed',String(n===i));
+    el.classList.remove('selected','range-start','range-end','in-range');
+    if(!hasUserDateSelection) return;
+    if(!rangeMode){
+      el.classList.toggle('selected',n===rangeStartIndex);
+      return;
+    }
+    const low=Math.min(rangeStartIndex,rangeEndIndex);
+    const high=Math.max(rangeStartIndex,rangeEndIndex);
+    if(n===rangeStartIndex) el.classList.add('range-start');
+    else if(n===rangeEndIndex) el.classList.add('range-end');
+    else if(n>low&&n<high) el.classList.add('in-range');
   });
+}
+function periodTotal(){
+  if(rangeStartIndex===null||rangeEndIndex===null) return 0;
+  const low=Math.min(rangeStartIndex,rangeEndIndex);
+  const high=Math.max(rangeStartIndex,rangeEndIndex);
+  return amounts.slice(low,high+1).reduce((sum,amount)=>sum+amount,0);
+}
+function syncEditorDateFields(){
+  rangeStartDateInput.value=rangeStartIndex===null?'':String(rangeStartIndex+1);
+  rangeEndDateInput.value=rangeEndIndex===null?'':String(rangeEndIndex+1);
+  periodAmountInput.value=String(periodTotal());
+}
+function selectCalendarDate(i){
+  if(!hasUserDateSelection){
+    rangeStartIndex=i;
+    rangeEndIndex=i;
+    rangeMode=false;
+    hasUserDateSelection=true;
+  }else if(rangeMode){
+    rangeStartIndex=i;
+    rangeEndIndex=i;
+    rangeMode=false;
+  }else if(i!==rangeStartIndex){
+    rangeEndIndex=i;
+    rangeMode=true;
+  }
+  choose(i);
+  syncEditorDateFields();
+  if(depositBackdrop.classList.contains('open')){
+    const points=chartPoints();
+    depositInput.value=String(points[selectedDay+1].balance);
+    const start=rangeStartIndex+1,end=rangeEndIndex+1;
+    document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+start+'–'+end+' November':'Edit balance · '+(selectedDay+1)+' November';
+  }
+}
+function choose(i){
+  selectedDay=i;
+  renderDateSelection();
   const points=chartPoints();
   const balanceIndex=i+1;
   const point=points[balanceIndex];
@@ -302,6 +378,43 @@ function scrollCalendarToToday(smooth=true){
   choose(todayIndex);
 }
 scrollCalendarToToday(false);
+rangeStartDateInput.addEventListener('input',updateSelectionFromEditor);
+rangeEndDateInput.addEventListener('input',updateSelectionFromEditor);
+clearDateSelectionButton.addEventListener('click',()=>{
+  rangeStartIndex=null;
+  rangeEndIndex=null;
+  rangeMode=false;
+  hasUserDateSelection=false;
+  renderDateSelection();
+  rangeStartDateInput.value='';
+  rangeEndDateInput.value='';
+  periodAmountInput.value='0';
+  selectedDay=todayIndex;
+  choose(todayIndex);
+  document.getElementById('depositTitle').textContent='Edit balance';
+  document.getElementById('depositDescription').textContent='Date selection cleared. Select a date on the calendar or enter a day above.';
+});
+function updateSelectionFromEditor(){
+  const startValue=rangeStartDateInput.value===''?null:Number(rangeStartDateInput.value);
+  const endValue=rangeEndDateInput.value===''?null:Number(rangeEndDateInput.value);
+  if(startValue===null&&endValue===null){
+    rangeStartIndex=null;rangeEndIndex=null;rangeMode=false;hasUserDateSelection=false;
+    renderDateSelection();periodAmountInput.value='0';return;
+  }
+  if(startValue===null||endValue===null) return;
+  if(!Number.isInteger(startValue)||!Number.isInteger(endValue)||startValue<1||startValue>30||endValue<1||endValue>30) return;
+  rangeStartIndex=startValue-1;
+  rangeEndIndex=endValue-1;
+  rangeMode=rangeStartIndex!==rangeEndIndex;
+  hasUserDateSelection=true;
+  selectedDay=rangeEndIndex;
+  choose(selectedDay);
+  periodAmountInput.value=String(periodTotal());
+  const points=chartPoints();
+  depositInput.value=String(points[selectedDay+1].balance);
+  document.getElementById('depositTitle').textContent=rangeMode?'Edit period · '+startValue+'–'+endValue+' November':'Edit balance · '+endValue+' November';
+}
+syncEditorDateFields();
 window.addEventListener('resize',()=>choose(selectedDay));
 
 // Tapping the empty dashboard background returns the calendar to today.
