@@ -137,6 +137,17 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
 .day .calendar-transaction.deposit{color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.42)}
 .day .calendar-transaction.withdrawal{color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.38)}
 .day.dim .calendar-transaction{opacity:.8!important}
+
+/* Give transaction summaries their own row beneath the daily amount */
+.day{gap:4px!important;padding-top:8px!important;overflow:hidden!important}
+.day.selected{padding-top:7px!important}
+.day .weekday{line-height:1.05}
+.day .date{line-height:1}
+.day .amount{margin-top:0!important;line-height:1.05}
+.day .transactions{position:static!important;left:auto!important;right:auto!important;bottom:auto!important;display:flex!important;flex-direction:row;align-items:center;justify-content:center;gap:2px;min-height:10px;margin:0!important;padding:0 1px;font-size:clamp(6px,1.2vw,9px)!important;font-weight:800!important;line-height:1!important;white-space:nowrap;z-index:1;pointer-events:none}
+.day .calendar-transaction{display:inline-block;visibility:visible!important;opacity:1!important;letter-spacing:-.04em}
+.day .calendar-transaction.deposit{color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.42)}
+.day .calendar-transaction.withdrawal{color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.38)}
 </style>
 </head>
 <body translate="no" class="notranslate">
