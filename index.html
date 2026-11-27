@@ -65,7 +65,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .edit-selection-icon{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:rgba(111,235,255,.17);color:#a9f5ff;font-size:17px}
 .edit-selection-arrow{margin-left:2px;color:rgba(205,245,255,.8);font-size:15px}
 .edit-selection-button:active{transform:translateX(-50%) scale(.97)}
-.days-window{position:absolute;left:7.32%;top:24.8%;width:89.36%;height:8.25%;overflow-x:auto;overflow-y:visible;scrollbar-width:none;touch-action:pan-x;overscroll-behavior-x:contain}
+.days-window{position:absolute;left:7.32%;top:24.8%;width:89.36%;height:10.5%;overflow-x:auto;overflow-y:visible;scrollbar-width:none;touch-action:pan-x;overscroll-behavior-x:contain}
 .days-window::-webkit-scrollbar{display:none}
 .days{height:100%;display:flex;gap:calc(min(100vw,1024px)*.0127);width:max-content;min-width:100%;padding:0 0 3px}
 .day{flex:0 0 calc(min(100vw,1024px)*.1006);width:calc(min(100vw,1024px)*.1006);height:100%;border:1px solid rgba(206,224,255,.09);border-radius:calc(min(100vw,1024px)*.0234);background:linear-gradient(145deg,rgba(255,255,255,.135),rgba(255,255,255,.065));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 7px 19px rgba(0,20,75,.13);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:13px;gap:11px;color:#f5f7ff;cursor:pointer;user-select:none;position:relative;white-space:nowrap}
@@ -174,6 +174,14 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
 .day .calendar-transaction.deposit{color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.5)!important}
 .day .calendar-transaction.withdrawal{color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.45)!important}
 .day.dim .calendar-transaction{opacity:.8!important}
+
+/* Larger calendar cards with clear spacing for all labels */
+.day{padding-bottom:30px!important}
+.day.selected{padding-bottom:30px!important}
+.day .weekday{flex-basis:17px!important;font-size:clamp(12px,2.3vw,17px)!important;line-height:17px!important}
+.day .date{flex-basis:34px!important;font-size:clamp(23px,4vw,31px)!important;line-height:34px!important}
+.day .amount{bottom:14px!important;height:12px!important;font-size:clamp(10px,1.7vw,13px)!important;line-height:12px!important}
+.day .transactions{bottom:1px!important;height:11px!important;min-height:11px!important;font-size:clamp(7px,1.3vw,10px)!important;line-height:11px!important}
 </style>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1">
 <link rel="apple-touch-icon" href="./favicon.svg?v=1">
