@@ -363,6 +363,48 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
   .day .date{flex-basis:43px!important;width:43px!important;height:43px!important;margin-bottom:8px!important;font-size:25px!important}
   .day .amount{font-size:13px!important}
 }
+
+/* Tighter calendar rhythm and cleaner non-circular date highlight */
+.day .weekday{
+  margin:0 0 2px!important;
+  line-height:1.05!important;
+}
+.day .date{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 auto!important;width:auto!important;height:auto!important;
+  min-width:38px!important;min-height:0!important;
+  margin:0 0 3px!important;padding:2px 9px!important;
+  border:1px solid transparent!important;border-radius:13px!important;
+  background:transparent!important;box-shadow:none!important;
+  font-size:clamp(25px,5.2vw,37px)!important;line-height:1.08!important;
+}
+.day .amount{
+  margin:0!important;line-height:1.1!important;
+  font-size:clamp(13px,3.2vw,20px)!important;
+}
+.day.selected .date{
+  border-color:rgba(99,194,255,.35)!important;
+  border-radius:13px!important;
+  background:linear-gradient(145deg,rgba(16,144,255,.34),rgba(7,101,220,.18))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 4px 13px rgba(0,112,255,.15)!important;
+}
+.day.dim .date{
+  border-color:transparent!important;background:transparent!important;
+  color:rgba(220,233,250,.55)!important;box-shadow:none!important;
+}
+.day.selected .weekday{margin-bottom:2px!important}
+.day.selected .amount{margin-top:1px!important}
+@media(max-width:420px){
+  .day .transactions{margin-bottom:5px!important}
+  .day .weekday{margin-bottom:2px!important;font-size:12px!important}
+  .day .date{
+    flex-basis:auto!important;width:auto!important;height:auto!important;
+    min-width:34px!important;padding:2px 8px!important;
+    margin-bottom:3px!important;font-size:25px!important;
+    border-radius:11px!important;
+  }
+  .day .amount{font-size:13px!important;line-height:1.1!important}
+}
 </style>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1">
 <link rel="apple-touch-icon" href="./favicon.svg?v=1">
