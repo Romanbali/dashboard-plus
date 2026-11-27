@@ -286,6 +286,83 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
   .day .date{flex-basis:42px!important;width:42px!important;height:42px!important;font-size:25px!important;margin-bottom:6px!important}
   .day .amount{font-size:13px!important}
 }
+
+/* Refined calendar finish: balanced pills, date circles and soft blue depth */
+.stage{
+  background:
+    radial-gradient(ellipse 95% 32% at 2% 0%,rgba(0,119,255,.22),transparent 70%),
+    radial-gradient(ellipse 75% 28% at 100% 38%,rgba(0,167,255,.12),transparent 72%),
+    linear-gradient(155deg,#0b1b35 0%,#10223e 48%,#0a172b 100%)!important;
+}
+.stage:before{
+  background:
+    radial-gradient(ellipse 70% 22% at 0% 0%,rgba(0,122,255,.22),transparent 75%),
+    radial-gradient(ellipse 60% 26% at 100% 45%,rgba(0,160,255,.1),transparent 78%),
+    linear-gradient(135deg,rgba(255,255,255,.025),transparent 45%)!important;
+}
+.days-window{height:20.5%!important}
+.day{padding-top:0!important}
+.day .transactions{
+  flex-basis:26px!important;height:26px!important;min-height:26px!important;
+  margin:0 0 7px!important;padding:0 10px!important;
+  border-radius:999px!important;
+  backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;
+  box-shadow:0 5px 15px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.13)!important;
+}
+.day .transactions:empty{opacity:0!important;visibility:hidden!important}
+.day .transactions:has(.deposit){
+  border-color:rgba(42,225,168,.48)!important;
+  background:linear-gradient(110deg,rgba(8,150,105,.38),rgba(12,108,91,.24))!important;
+}
+.day .transactions:has(.withdrawal){
+  border-color:rgba(255,100,130,.48)!important;
+  background:linear-gradient(110deg,rgba(185,44,76,.4),rgba(128,35,66,.25))!important;
+}
+.day .weekday{
+  color:#a9c5e9!important;font-size:clamp(12px,2.6vw,19px)!important;
+  letter-spacing:.01em!important;font-weight:500!important;
+  margin-bottom:8px!important;
+}
+.day .date{
+  flex-basis:clamp(43px,12.4vw,68px)!important;
+  width:clamp(43px,12.4vw,68px)!important;
+  height:clamp(43px,12.4vw,68px)!important;
+  margin-bottom:9px!important;
+  border:1px solid rgba(187,214,255,.12)!important;
+  background:linear-gradient(145deg,rgba(174,204,241,.13),rgba(124,161,208,.07))!important;
+  color:#f3f7ff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 5px 14px rgba(0,0,0,.08)!important;
+}
+.day.selected .weekday{color:#38c6ff!important}
+.day.selected .date{
+  border:1px solid rgba(116,213,255,.72)!important;
+  background:linear-gradient(145deg,#159bff,#0864df)!important;
+  box-shadow:0 0 0 4px rgba(12,133,255,.12),0 8px 22px rgba(0,112,255,.35),inset 0 1px 0 rgba(255,255,255,.3)!important;
+}
+.day.dim .date{
+  border-color:rgba(190,211,239,.07)!important;
+  background:linear-gradient(145deg,rgba(160,183,211,.42),rgba(112,137,168,.28))!important;
+  color:#dfe8f5!important;
+}
+.day .amount{
+  color:#dceaff!important;font-size:clamp(13px,3.4vw,21px)!important;
+  font-weight:500!important;letter-spacing:-.015em!important;
+}
+.day.selected .amount{color:#38bfff!important;font-weight:600!important}
+.day.dim .amount{color:rgba(202,219,243,.45)!important}
+.stage.date-selection-active .days .day.in-range .date,
+.stage.date-selection-active .days .day.range-start .date,
+.stage.date-selection-active .days .day.range-end .date{
+  border-color:rgba(255,140,211,.8)!important;
+  background:linear-gradient(145deg,#ed65b8,#a849b9)!important;
+}
+@media(max-width:420px){
+  .days-window{height:20.5%!important}
+  .day .transactions{flex-basis:24px!important;height:24px!important;min-height:24px!important;margin-bottom:6px!important;padding:0 7px!important;font-size:8px!important}
+  .day .weekday{margin-bottom:7px!important}
+  .day .date{flex-basis:43px!important;width:43px!important;height:43px!important;margin-bottom:8px!important;font-size:25px!important}
+  .day .amount{font-size:13px!important}
+}
 </style>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1">
 <link rel="apple-touch-icon" href="./favicon.svg?v=1">
