@@ -126,39 +126,65 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
   radial-gradient(ellipse 58% 38% at 4% 58%,rgba(32,102,139,.12),transparent 78%),
   radial-gradient(ellipse 66% 42% at 100% 88%,rgba(77,68,150,.15),transparent 80%),
   linear-gradient(135deg,rgba(255,255,255,.025),transparent 42%) !important}
-.day .transactions{display:flex;align-items:center;justify-content:center;gap:3px;min-height:8px;margin-top:-9px;font-size:clamp(6px,1.35vw,11px);font-weight:700;line-height:1;white-space:nowrap;letter-spacing:-.025em}
-.calendar-transaction.deposit{color:#36d49a;text-shadow:0 0 5px rgba(54,212,154,.22)}
-.calendar-transaction.withdrawal{color:#ffad70;text-shadow:0 0 5px rgba(255,173,112,.2)}
-/* Keep transaction badges inside the compact day cards and above clipping */
-.day{overflow:visible}
-.day .transactions{position:absolute!important;left:1px;right:1px;bottom:5px;display:flex!important;align-items:center;justify-content:center;gap:3px;min-height:11px;margin:0!important;padding:0 1px;font-size:clamp(7px,1.55vw,12px)!important;font-weight:800!important;line-height:1.15!important;white-space:nowrap;z-index:5;pointer-events:none}
-.day .amount{margin-top:-5px}
-.day .calendar-transaction{display:inline-block;visibility:visible!important;opacity:1!important}
-.day .calendar-transaction.deposit{color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.42)}
-.day .calendar-transaction.withdrawal{color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.38)}
+/* Calendar typography and cash-flow labels: compact, consistent four-line layout */
+.day{
+  box-sizing:border-box!important;
+  height:100%!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  padding:5px 1px 2px!important;
+  white-space:nowrap!important;
+}
+.day.selected{padding:4px 0 1px!important}
+.day .weekday{
+  display:block!important;flex:0 0 14px!important;
+  margin:0!important;padding:0!important;
+  font-size:clamp(11px,2.15vw,16px)!important;
+  font-weight:400!important;line-height:14px!important;
+}
+.day .date{
+  display:block!important;flex:0 0 27px!important;
+  margin:0!important;padding:0!important;
+  font-size:clamp(21px,3.8vw,29px)!important;
+  font-weight:600!important;line-height:27px!important;
+  letter-spacing:-.025em!important;
+}
+.day .amount{
+  display:block!important;flex:0 0 12px!important;
+  width:100%!important;margin:0!important;padding:0!important;
+  font-size:clamp(9px,1.55vw,12px)!important;
+  font-weight:500!important;line-height:12px!important;
+  text-align:center!important;
+}
+.day .transactions{
+  position:static!important;display:flex!important;
+  flex:0 0 10px!important;width:100%!important;
+  min-height:10px!important;height:10px!important;
+  margin:0!important;padding:0 1px!important;
+  flex-direction:row!important;align-items:center!important;
+  justify-content:center!important;gap:2px!important;
+  overflow:hidden!important;white-space:nowrap!important;
+  font-size:clamp(7px,1.2vw,9px)!important;
+  font-weight:800!important;line-height:10px!important;
+  pointer-events:none!important;
+}
+.day .calendar-transaction{
+  display:inline-block!important;flex:0 1 auto!important;
+  min-width:0!important;visibility:visible!important;
+  opacity:1!important;letter-spacing:-.035em!important;
+}
+.day .calendar-transaction.deposit{
+  color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.5)!important;
+}
+.day .calendar-transaction.withdrawal{
+  color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.45)!important;
+}
 .day.dim .calendar-transaction{opacity:.8!important}
-
-/* Compact vertical rhythm so both the daily amount and transaction row fit */
-.day{gap:2px!important;padding:5px 1px 3px!important;overflow:hidden!important;justify-content:flex-start!important}
-.day.selected{padding:4px 0 2px!important}
-.day .weekday{font-size:clamp(10px,2vw,18px)!important;line-height:1!important;flex:0 0 auto}
-.day .date{font-size:clamp(16px,3.3vw,30px)!important;line-height:1!important;flex:0 0 auto}
-.day .amount{font-size:clamp(8px,1.45vw,12px)!important;margin:0!important;line-height:1!important;flex:0 0 auto}
-.day .transactions{position:static!important;display:flex!important;flex:0 0 auto!important;flex-direction:row;align-items:center;justify-content:center;gap:2px;min-height:9px;margin:0!important;padding:0 1px;font-size:clamp(6px,1.15vw,9px)!important;font-weight:800!important;line-height:1!important;white-space:nowrap;z-index:1;pointer-events:none}
-.day .calendar-transaction{display:inline-block;flex:0 0 auto;visibility:visible!important;opacity:1!important;letter-spacing:-.04em}
-.day .calendar-transaction.deposit{color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.42)}
-.day .calendar-transaction.withdrawal{color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.38)}
-
-/* Compact four-row day card: weekday, date, daily amount, transactions */
-.day{position:relative!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:2px!important;padding:6px 1px 3px!important}
-.day.selected{padding:5px 0 2px!important}
-.day .weekday{position:static!important;display:block!important;flex:0 0 auto!important;margin:0!important;font-size:clamp(10px,2vw,17px)!important;line-height:12px!important}
-.day .date{position:static!important;display:block!important;flex:0 0 auto!important;margin:0!important;font-size:clamp(17px,3.5vw,27px)!important;line-height:25px!important}
-.day .amount{position:static!important;display:block!important;flex:0 0 auto!important;width:100%;margin:0!important;font-size:clamp(9px,1.6vw,12px)!important;line-height:11px!important;text-align:center!important;z-index:2}
-.day .transactions{position:static!important;display:flex!important;flex:0 0 auto!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:2px!important;width:100%;min-height:9px!important;margin:0!important;padding:0 1px!important;font-size:clamp(7px,1.25vw,9px)!important;font-weight:800!important;line-height:9px!important;white-space:nowrap!important;z-index:3!important;overflow:visible!important;pointer-events:none!important}
-.day .calendar-transaction{display:inline-block!important;visibility:visible!important;opacity:1!important;flex:0 0 auto!important;letter-spacing:-.03em!important}
-.day .calendar-transaction.deposit{color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.5)!important}
-.day .calendar-transaction.withdrawal{color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.45)!important}
 </style>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1">
 <link rel="apple-touch-icon" href="./favicon.svg?v=1">
