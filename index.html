@@ -410,6 +410,36 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
 .day .amount{color:#b9d8ff!important;text-shadow:0 0 8px rgba(77,164,255,.12)!important}
 .day.selected .amount{color:#55d6ff!important;text-shadow:0 0 9px rgba(49,190,255,.24)!important}
 .day.dim .amount{color:rgba(185,216,255,.48)!important}
+
+/* Range selection: tint only the date badge, never the whole calendar column */
+.stage.date-selection-active .days .day.in-range,
+.stage.date-selection-active .days .day.range-start,
+.stage.date-selection-active .days .day.range-end{
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+.stage.date-selection-active .days .day.range-start .date,
+.stage.date-selection-active .days .day.range-end .date,
+.stage.date-selection-active .days .day.in-range .date{
+  border:1px solid rgba(255,133,210,.48)!important;
+  border-radius:11px!important;
+  background:linear-gradient(135deg,rgba(236,83,184,.3),rgba(153,87,213,.24))!important;
+  color:#fff!important;
+  box-shadow:0 3px 12px rgba(210,65,177,.15),inset 0 1px 0 rgba(255,255,255,.14)!important;
+}
+.stage.date-selection-active .days .day.range-start .date,
+.stage.date-selection-active .days .day.range-end .date{
+  border-color:rgba(255,153,219,.8)!important;
+  background:linear-gradient(135deg,rgba(244,91,190,.52),rgba(164,91,218,.4))!important;
+}
+.stage.date-selection-active .edit-selection-button{
+  top:48%!important;
+}
+@media(max-width:600px){
+  .stage.date-selection-active .edit-selection-button{top:48%!important}
+}
 </style>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1">
 <link rel="apple-touch-icon" href="./favicon.svg?v=1">
