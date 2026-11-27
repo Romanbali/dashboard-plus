@@ -126,21 +126,15 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
   radial-gradient(ellipse 58% 38% at 4% 58%,rgba(32,102,139,.12),transparent 78%),
   radial-gradient(ellipse 66% 42% at 100% 88%,rgba(77,68,150,.15),transparent 80%),
   linear-gradient(135deg,rgba(255,255,255,.025),transparent 42%) !important}
-/* Calendar typography and cash-flow labels: compact, consistent four-line layout */
+/* Calendar cards: reserve fixed bottom lanes so amounts never slip outside */
 .day{
-  box-sizing:border-box!important;
-  height:100%!important;
-  min-height:0!important;
-  overflow:hidden!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  gap:0!important;
-  padding:5px 1px 2px!important;
-  white-space:nowrap!important;
+  box-sizing:border-box!important;position:relative!important;
+  height:100%!important;min-height:0!important;overflow:hidden!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:flex-start!important;
+  gap:0!important;padding:5px 1px 25px!important;white-space:nowrap!important;
 }
-.day.selected{padding:4px 0 1px!important}
+.day.selected{padding-top:4px!important;padding-bottom:25px!important}
 .day .weekday{
   display:block!important;flex:0 0 14px!important;
   margin:0!important;padding:0!important;
@@ -148,42 +142,37 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
   font-weight:400!important;line-height:14px!important;
 }
 .day .date{
-  display:block!important;flex:0 0 27px!important;
+  display:block!important;flex:0 0 26px!important;
   margin:0!important;padding:0!important;
-  font-size:clamp(21px,3.8vw,29px)!important;
-  font-weight:600!important;line-height:27px!important;
+  font-size:clamp(20px,3.65vw,28px)!important;
+  font-weight:600!important;line-height:26px!important;
   letter-spacing:-.025em!important;
 }
 .day .amount{
-  display:block!important;flex:0 0 12px!important;
-  width:100%!important;margin:0!important;padding:0!important;
+  position:absolute!important;left:1px!important;right:1px!important;
+  bottom:12px!important;width:auto!important;height:11px!important;
+  display:block!important;margin:0!important;padding:0!important;
   font-size:clamp(9px,1.55vw,12px)!important;
-  font-weight:500!important;line-height:12px!important;
-  text-align:center!important;
+  font-weight:500!important;line-height:11px!important;
+  text-align:center!important;z-index:2!important;
 }
 .day .transactions{
-  position:static!important;display:flex!important;
-  flex:0 0 10px!important;width:100%!important;
-  min-height:10px!important;height:10px!important;
-  margin:0!important;padding:0 1px!important;
+  position:absolute!important;left:1px!important;right:1px!important;
+  bottom:1px!important;width:auto!important;height:10px!important;
+  min-height:10px!important;display:flex!important;
   flex-direction:row!important;align-items:center!important;
   justify-content:center!important;gap:2px!important;
-  overflow:hidden!important;white-space:nowrap!important;
-  font-size:clamp(7px,1.2vw,9px)!important;
+  margin:0!important;padding:0 1px!important;overflow:hidden!important;
+  white-space:nowrap!important;font-size:clamp(7px,1.2vw,9px)!important;
   font-weight:800!important;line-height:10px!important;
-  pointer-events:none!important;
+  z-index:3!important;pointer-events:none!important;
 }
 .day .calendar-transaction{
-  display:inline-block!important;flex:0 1 auto!important;
-  min-width:0!important;visibility:visible!important;
-  opacity:1!important;letter-spacing:-.035em!important;
+  display:inline-block!important;flex:0 1 auto!important;min-width:0!important;
+  visibility:visible!important;opacity:1!important;letter-spacing:-.035em!important;
 }
-.day .calendar-transaction.deposit{
-  color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.5)!important;
-}
-.day .calendar-transaction.withdrawal{
-  color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.45)!important;
-}
+.day .calendar-transaction.deposit{color:#54f0b3!important;text-shadow:0 0 5px rgba(54,240,179,.5)!important}
+.day .calendar-transaction.withdrawal{color:#ffc08e!important;text-shadow:0 0 5px rgba(255,173,112,.45)!important}
 .day.dim .calendar-transaction{opacity:.8!important}
 </style>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1">
