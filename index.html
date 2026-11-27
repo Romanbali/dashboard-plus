@@ -440,6 +440,15 @@ body{background:radial-gradient(ellipse at 50% 0%,#18243a 0%,#0b1220 58%,#070c15
 @media(max-width:600px){
   .stage.date-selection-active .edit-selection-button{top:48%!important}
 }
+
+/* The first date in a selected range keeps the normal active-day treatment */
+.stage.date-selection-active .days .day.range-start .date{
+  border:1px solid rgba(116,213,255,.72)!important;
+  border-radius:13px!important;
+  background:linear-gradient(145deg,#159bff,#0864df)!important;
+  color:#fff!important;
+  box-shadow:0 0 0 4px rgba(12,133,255,.12),0 8px 22px rgba(0,112,255,.28),inset 0 1px 0 rgba(255,255,255,.3)!important;
+}
 </style>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1">
 <link rel="apple-touch-icon" href="./favicon.svg?v=1">
@@ -858,7 +867,7 @@ function renderDateSelection(){
     }else{
       const low=Math.min(rangeStartIndex,rangeEndIndex);
       const high=Math.max(rangeStartIndex,rangeEndIndex);
-      if(n===rangeStartIndex){el.classList.add('range-start');pressed=true;}
+      if(n===rangeStartIndex){el.classList.add('range-start','selected');pressed=true;}
       else if(n===rangeEndIndex){el.classList.add('range-end');pressed=true;}
       else if(n>low&&n<high){el.classList.add('in-range');pressed=true;}
     }
